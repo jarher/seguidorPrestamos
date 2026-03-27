@@ -46,7 +46,7 @@ router.post('/register', registerLimiter, async (req, res) => {
       return res.status(400).json({ message: 'User already exists' });
     }
 
-    const user = await User.create({ email, password, fullName });
+    const user = await User.create({ email, passwordHash: password, fullName });
     const { accessToken, refreshToken } = generateTokens(user);
 
     res.status(201).json({
