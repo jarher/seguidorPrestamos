@@ -1,0 +1,131 @@
+import { store } from '../services/store.js';
+import { logout, getSession } from '../services/authClient.js';
+
+export class LenderNav extends HTMLElement {
+    constructor() {
+        super();
+        this.render();
+    }
+
+    connectedCallback() {
+        this.unsubscribe = store.subscribe(() => this.render());
+        this.render();
+    }
+
+    disconnectedCallback() {
+        if (this.unsubscribe) this.unsubscribe();
+    }
+
+    render() {
+        const session = store.getState().session || getSession();
+        const isAuthed = Boolean(session?.token);
+        const rawUserName = session?.user?.fullName || 'Usuario';
+        const userName = DOMPurify.sanitize(rawUserName, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
+        const initials = userName.split(' ').filter(Boolean).slice(0, 2).map(p => p[0].toUpperCase()).join('') || 'U';
+
+        this.innerHTML = `
+            <nav class="sidebar glass">
+                <div class="logo">
+                    <img src="favicon.png" alt="Lender's HQ logo">
+                    <span class="logo-text">Lender's HQ</span>
+                </div>
+                <ul class="nav-links" style="${isAuthed ? '' : 'display:none'}">
+                    <li class="active" data-view="dashboard">
+                        <span class="icon">📊</span>
+                        <span class="text">Dashboard</span>
+                    </li>
+                    <li data-view="borrowers">
+                        <span class="icon">👥</span>
+                        <span class="text">Prestatarios</span>
+                    </li>
+                    <li data-view="loans">
+                        <span class="icon">💸</span>
+                        <span class="text">Préstamos</span>
+                    </li>
+                    <li data-view="new-loan">
+                        <span class="icon">➕</span>
+                        <span class="text">Nuevo Préstamo</span>
+                    </li>
+                </ul>
+                <div class="user-profile">
+                    <div class="user-info-section">
+                        <div class="avatar">${initials}</div>
+                        <div class="user-info">
+                            <p class="name">${isAuthed ? userName : 'Invitado'}</p>
+                            <p class="role">${isAuthed ? 'Sesión activa' : 'Inicia sesión'}</p>
+                        </div>
+                    </div>
+                    <div class="user-profile__actions">        
+                        <button id="theme-toggle" class="btn-theme-toggle" title="Cambiar tema">
+                            <span class="material-icons">dark_mode</span>
+                        </button>
+                        ${isAuthed ? `<button id="logout-btn" class="btn-theme-toggle" title="Cerrar sesión"><span class="material-icons">logout</span></button>` : ''}
+                    </div>
+                </div>
+            </nav>
+        `;
+
+        this.querySelectorAll('.nav-links li').forEach(li => {
+            li.addEventListener('click', () => {
+                this.querySelectorAll('.nav-links li').forEach(el => el.classList.remove('active'));
+                li.classList.add('active');
+                const view = li.getAttribute('data-view');
+                window.dispatchEvent(new CustomEvent('view-change', { detail: view }));
+            });
+        });
+
+        const themeToggle = this.querySelector('#theme-toggle');
+        const updateThemeIcon = () => {
+            const isLight = document.body.classList.contains('light-theme');
+            themeToggle.querySelector('.material-icons').textContent = isLight ? 'light_mode' : 'dark_mode';
+        };
+
+        // Initialize icon
+        updateThemeIcon();
+
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('light-theme');
+            updateThemeIcon();
+
+            // Persist theme
+            const theme = document.body.classList.contains('light-theme') ? 'light' : 'dark';
+            localStorage.setItem('lender_theme', theme);
+        });
+
+        // Load persisted theme
+        if (localStorage.getItem('lender_theme') === 'light') {
+            document.body.classList.add('light-theme');
+            updateThemeIcon();
+        }
+
+        const logoutBtn = this.querySelector('#logout-btn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', () => {
+                store.setLogoutModal(true);
+                window.dispatchEvent(new CustomEvent('open-modal', { detail: 'logout' }));
+            });
+        }
+
+        // Listen for external view changes to sync active state
+        this._viewChangeListener = (e) => {
+            const view = typeof e.detail === 'string' ? e.detail : e.detail.view;
+            this._setActiveLink(view);
+        };
+        window.addEventListener('view-change', this._viewChangeListener);
+    }
+
+    _setActiveLink(view) {
+        this.querySelectorAll('.nav-links li').forEach(li => {
+            li.classList.toggle('active', li.getAttribute('data-view') === view);
+        });
+    }
+
+    disconnectedCallback() {
+        if (this.unsubscribe) this.unsubscribe();
+        if (this._viewChangeListener) {
+            window.removeEventListener('view-change', this._viewChangeListener);
+        }
+    }
+}
+
+customElements.define('lender-nav', LenderNav);

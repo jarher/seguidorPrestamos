@@ -1,0 +1,32 @@
+{
+  "name": "seguidor-de-prestamos",
+  "version": "1.0.0",
+  "description": "Premium Loan Tracker for Lenders",
+  "main": "./api/index.js",
+  "type": "module",
+  "scripts": {
+    "test": "vitest",
+    "dev": "node api/index.js",
+    "dev:static": "npx serve .",
+    "build": "vite build && node scripts/prepare-dist.js",
+    "preview": "vite preview",
+    "start": "NODE_ENV=production node dist/api/index.js"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "compression": "^1.8.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.3.1",
+    "fs-extra": "^11.3.4",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^9.3.3"
+  },
+  "devDependencies": {
+    "jsdom": "^29.0.1",
+    "vite": "^6.2.0",
+    "vitest": "^1.0.0"
+  }
+}

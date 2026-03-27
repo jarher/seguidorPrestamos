@@ -1,0 +1,26 @@
+# Environment variables (contain credentials - NEVER commit)
+.env
+.kiro
+# Dependencies
+node_modules/
+
+# Cache
+.cache/
+
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# Antigravity / Gemini files
+.gemini/
+brain/
+*.log
+agent.md
+
+
+dist/
