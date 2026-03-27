@@ -40,37 +40,4 @@ El proyecto utiliza tecnologías modernas y eficientes para garantizar velocidad
 *   **Adaptabilidad Total**: Interfaz de tablas dinámicas que se transforman en tarjetaskw móviles.
 
 ---
-
-## 🛠️ Configuración Local
-
-1. **Clonar el repositorio**:
-   ```bash
-   git clone <url-del-repositorio>
-   cd seguidor-de-prestamos
-   ```
-
-2. **Instalar dependencias**:
-   ```bash
-   npm install
-   ```
-
-3. **Variables de Entorno**:
-   Crea un archivo `.env` en la raíz basado en `.env.example`:
-   ```env
-   PORT=3000
-   MONGODB_URI=mongodb://localhost:27017/lenders_hq
-   JWT_SECRET=tu_clave_secreta
-   ```
-
-4. **Correr la aplicación**:
-   ```bash
-   npm run dev
-   ```
-
----
-
-## 🌐 Despliegue
-Para instrucciones detalladas sobre cómo subir esta app a producción (Render, Vercel, VPS) y habilitar **HTTPS**, consulta nuestra [Guía de Despliegue](.gemini/antigravity/brain/5619701b-403d-4ef3-a2ec-ec6b3081942d/deployment_guide.md).
-
----
 *Idea y desarrollo del proyecto por Jeffer Andrés Rojas Herrera. <a href="https://www.linkedin.com/in/jeffer-andres-rojas-herrera-20a735210/?skipRedirect=true">Perfil en linkedin</a>*
