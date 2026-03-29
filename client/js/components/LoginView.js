@@ -1,6 +1,7 @@
 import { login, getSession } from "../services/authClient.js";
 import { store } from "../services/store.js";
 import { NotificationPanel } from "./NotificationPanel.js";
+import { sanitize } from "../utils/sanitize.js";
 
 export class LoginView extends HTMLElement {
 
@@ -108,7 +109,7 @@ export class LoginView extends HTMLElement {
         
         this.hideLoader(); // Ocultar ANTES de la notificación
 
-        const safeName = DOMPurify.sanitize(data.user?.fullName || 'usuario', { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
+        const safeName = sanitize(data.user?.fullName || 'usuario');
         NotificationPanel.show(
           `Bienvenido, ${safeName}`,
           () => {

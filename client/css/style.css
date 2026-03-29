@@ -155,6 +155,43 @@ body {
     border: 1px solid var(--glass-border);
 }
 
+/* Currency selector li - not a navigation item */
+.nav-links li[data-no-nav] {
+    cursor: default;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    border-top: 1px solid var(--glass-border);
+    margin-top: 1rem;
+    padding-top: 1rem;
+    margin-bottom: 0;
+}
+
+.nav-links li[data-no-nav]:hover {
+    background: transparent;
+    color: inherit;
+}
+
+.nav-links li[data-no-nav].active {
+    background: transparent;
+    color: inherit;
+    border: none;
+}
+
+.nav-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding-left: 2px;
+}
+
+.display-currency-block {
+    border-top: none;
+    margin-top: 0;
+    padding-top: 0.25rem;
+}
+
 .user-profile {
     margin-top: auto;
     display: flex;

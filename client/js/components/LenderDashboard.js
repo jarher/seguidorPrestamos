@@ -1,6 +1,7 @@
 import { store } from "../services/store.js";
 import { formatCurrency } from "../utils/calculations.js";
 import { ReportService } from "../services/ReportService.js";
+import { sanitize } from "../utils/sanitize.js";
 
 export class LenderDashboard extends HTMLElement {
   constructor() {
@@ -87,16 +88,22 @@ export class LenderDashboard extends HTMLElement {
 
   updateStats() {
     const { loans } = store.getState();
+    const baseCurrency = store.getCurrency();
+    const displayCurrency = store.getDisplayCurrency();
+
     const totalCapital = loans.reduce((acc, loan) => acc + loan.amount, 0);
     const totalInterest = loans.reduce(
-      (acc, loan) => acc + loan.amount * (loan.interest / 100),
+      (acc, loan) =>
+        acc + (loan.paymentsHistory || []).reduce(
+          (pAcc, p) => pAcc + (parseFloat(p.interest) || 0), 0,
+        ),
       0,
     );
 
     this.querySelector("#total-capital").textContent =
-      formatCurrency(totalCapital);
+      formatCurrency(store.convertForDisplay(totalCapital, baseCurrency), displayCurrency);
     this.querySelector("#total-interest").textContent =
-      formatCurrency(totalInterest);
+      formatCurrency(store.convertForDisplay(totalInterest, baseCurrency), displayCurrency);
 
     this.updateDueToday(loans);
     this.updateUpcomingWeek(loans);
@@ -147,10 +154,10 @@ export class LenderDashboard extends HTMLElement {
       return;
     }
 
-    container.innerHTML = sortedList
+        container.innerHTML = sortedList
       .map((item) => {
-        const safeBorrower = DOMPurify.sanitize(item.borrower || '', { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
-        const safeLoanId = DOMPurify.sanitize(item.loanId || '', { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
+        const safeBorrower = sanitize(item.borrower || '');
+        const safeLoanId = sanitize(item.loanId || '');
         const dateObj = new Date(item.date);
         const dayName = dateObj.toLocaleDateString("es-ES", {
           weekday: "short",
@@ -161,7 +168,7 @@ export class LenderDashboard extends HTMLElement {
                 <div class="due-card glass" data-loan-id="${safeLoanId}">
                     <div class="due-info">
                         <h3>${safeBorrower}</h3>
-                        <p class="due-amount">${formatCurrency(item.amount)}</p>
+                        <p class="due-amount">${formatCurrency(store.convertForDisplay(item.amount, store.getCurrency()), store.getDisplayCurrency())}</p>
                         <p class="due-date">
                             <span class="day-badge">${dayName} ${dayNum}</span>
                             <span class="days-label">${item.daysUntil === 1 ? "Mañana" : `En ${item.daysUntil} días`}</span>
@@ -179,8 +186,9 @@ export class LenderDashboard extends HTMLElement {
     const dueTodayList = [];
 
     loans.forEach((loan) => {
-      loan.schedule.forEach((payment) => {
-        if (payment.date === today && !payment.paid) {
+      const schedule = loan.schedule || [];
+      schedule.forEach((payment) => {
+        if (payment.date === today && payment.status === "pendiente") {
           dueTodayList.push({
             borrower: loan.borrowerName,
             amount: payment.totalPayment,
@@ -206,12 +214,12 @@ export class LenderDashboard extends HTMLElement {
     container.innerHTML = dueTodayList
       .map(
         (item) => {
-          const safeBorrower = DOMPurify.sanitize(item.borrower || '', { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
+          const safeBorrower = sanitize(item.borrower || '');
           return `
             <div class="due-card glass border-orange">
                 <div class="due-info">
                     <h3>${safeBorrower}</h3>
-                    <p class="due-amount">${formatCurrency(item.amount)}</p>
+                    <p class="due-amount">${formatCurrency(store.convertForDisplay(item.amount, store.getCurrency()), store.getDisplayCurrency())}</p>
                     <p class="due-installment">Cuota #${item.installment} de ${item.totalInstallments}</p>
                 </div>
                 <button class="btn btn-primary btn-sm">Cobrar</button>

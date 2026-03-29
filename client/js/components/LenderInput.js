@@ -1,3 +1,6 @@
+import { sanitize as sanitizeHtml } from '../utils/sanitize.js';
+import { formatInputNumber } from '../utils/calculations.js';
+
 export class LenderInput extends HTMLElement {
     constructor() {
         super();
@@ -5,7 +8,7 @@ export class LenderInput extends HTMLElement {
     }
 
     static sanitize(value) {
-        return DOMPurify.sanitize(value, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
+        return sanitizeHtml(value);
     }
 
     static get observedAttributes() {
@@ -31,12 +34,17 @@ export class LenderInput extends HTMLElement {
         const input = this.querySelector('input');
         if (!input) return;
 
+        const isCurrencyInput = this.hasAttribute('data-currency');
+
         input.addEventListener('blur', () => {
             this._isTouched = true;
             this.validate();
         });
 
         input.addEventListener('input', () => {
+            if (isCurrencyInput) {
+                this._formatAsCurrency(input);
+            }
             if (this._isTouched) {
                 this.validate();
             }
@@ -61,6 +69,12 @@ export class LenderInput extends HTMLElement {
     set value(val) {
         const input = this.querySelector('input');
         if (input) input.value = LenderInput.sanitize(String(val));
+    }
+
+    get numericValue() {
+        const raw = this.value || '';
+        const digits = raw.replace(/[^\d]/g, '');
+        return parseInt(digits, 10) || 0;
     }
 
     get touched() {
@@ -201,6 +215,27 @@ export class LenderInput extends HTMLElement {
 
     formatNumber(num) {
         return new Intl.NumberFormat('es-CO').format(num);
+    }
+
+    _formatAsCurrency(input) {
+        const cursorPos = input.selectionStart;
+        const oldLength = input.value.length;
+
+        const digits = input.value.replace(/[^\d]/g, '');
+        const currency = this.getAttribute('data-currency') || 'COP';
+
+        if (!digits) {
+            input.value = '';
+            return;
+        }
+
+        const formatted = formatInputNumber(digits, currency);
+        input.value = formatted;
+
+        const newLength = formatted.length;
+        const diff = newLength - oldLength;
+        const newPos = Math.max(0, cursorPos + diff);
+        input.setSelectionRange(newPos, newPos);
     }
 
     showError(message) {

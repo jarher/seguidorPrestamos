@@ -1,26 +1,21 @@
 import { apiRequest } from './apiClient.js';
 
-const ACCESS_KEY = 'lender_access_token';
-const REFRESH_KEY = 'lender_refresh_token';
-const USER_KEY = 'lender_user';
+const SESSION_KEY = 'lender_session';
 
 export function getSession() {
-  const token = localStorage.getItem(ACCESS_KEY);
-  const refreshToken = localStorage.getItem(REFRESH_KEY);
-  const user = JSON.parse(localStorage.getItem(USER_KEY) || 'null');
-  return { token, refreshToken, user };
+  try {
+    return JSON.parse(localStorage.getItem(SESSION_KEY)) || { token: null, user: null };
+  } catch {
+    return { token: null, user: null };
+  }
 }
 
-export function setSession({ token, refreshToken, user }) {
-  if (token) localStorage.setItem(ACCESS_KEY, token);
-  if (refreshToken) localStorage.setItem(REFRESH_KEY, refreshToken);
-  if (user) localStorage.setItem(USER_KEY, JSON.stringify(user));
+export function setSession({ token, user }) {
+  localStorage.setItem(SESSION_KEY, JSON.stringify({ token, user }));
 }
 
 export function clearSession() {
-  localStorage.removeItem(ACCESS_KEY);
-  localStorage.removeItem(REFRESH_KEY);
-  localStorage.removeItem(USER_KEY);
+  localStorage.removeItem(SESSION_KEY);
 }
 
 export async function register({ email, password, fullName }) {
@@ -29,7 +24,7 @@ export async function register({ email, password, fullName }) {
     body: JSON.stringify({ email, password, fullName }),
   });
 
-  setSession({ token: data.token, refreshToken: data.refreshToken, user: data.user });
+  setSession({ token: data.token, user: data.user });
   return data;
 }
 
@@ -39,21 +34,16 @@ export async function login({ email, password }) {
     body: JSON.stringify({ email, password }),
   });
 
-  setSession({ token: data.token, refreshToken: data.refreshToken, user: data.user });
+  setSession({ token: data.token, user: data.user });
   return data;
 }
 
 export async function logout() {
-  const session = getSession();
   try {
-    await apiRequest('/api/auth/logout', { 
-      method: 'POST', 
-      body: JSON.stringify({ refreshToken: session.refreshToken }) 
-    });
+    await apiRequest('/api/auth/logout', { method: 'POST' });
   } catch {
     // ignore
   } finally {
     clearSession();
   }
 }
-

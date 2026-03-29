@@ -1,6 +1,7 @@
 import { store } from '../services/store.js';
 import { formatCurrency } from '../utils/calculations.js';
 import { getBorrowerColorIndex } from '../utils/borrowerColors.js';
+import { sanitize } from '../utils/sanitize.js';
 
 export class BorrowersView extends HTMLElement {
     constructor() {
@@ -74,11 +75,12 @@ export class BorrowersView extends HTMLElement {
 
             const pendingPrincipal = loan.amount - totalPaidCapital;
 
-            const nextPayment = loan.schedule.find(p => !p.paid);
+            const schedule = loan.schedule || [];
+            const nextPayment = schedule.find(p => p.status !== 'pagada');
             const statusClass = this.getStatusClass(loan);
             const statusLabel = this.getStatusLabel(loan);
-            const safeBorrowerName = DOMPurify.sanitize(loan.borrowerName || '', { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
-            const safeLoanId = DOMPurify.sanitize(loan.id || '', { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
+            const safeBorrowerName = sanitize(loan.borrowerName || '');
+            const safeLoanId = sanitize(loan.id || '');
             const colorIdx = getBorrowerColorIndex(loan.color);
 
             return `
@@ -89,8 +91,8 @@ export class BorrowersView extends HTMLElement {
                             <span>${safeBorrowerName}</span>
                         </div>
                     </td>
-                    <td data-label="Prestado">${formatCurrency(loan.amount)}</td>
-                    <td data-label="Balance Actual" class="font-bold">${formatCurrency(pendingPrincipal)}</td>
+                    <td data-label="Prestado">${formatCurrency(store.convertForDisplay(loan.amount, store.getCurrency()), store.getDisplayCurrency())}</td>
+                    <td data-label="Balance Actual" class="font-bold">${formatCurrency(store.convertForDisplay(pendingPrincipal, store.getCurrency()), store.getDisplayCurrency())}</td>
                     <td data-label="Próximo Pago">${nextPayment ? nextPayment.date : 'N/A'}</td>
                     <td data-label="Estado"><span class="badge ${statusClass}">${statusLabel}</span></td>
                     <td data-label="Acciones">

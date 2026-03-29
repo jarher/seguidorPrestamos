@@ -53,7 +53,8 @@ export class NewLoanView extends HTMLElement {
                                     id="loan-amount" 
                                     type="text"
                                     label="Monto a Prestar" 
-                                    placeholder="0.00" 
+                                    placeholder="0" 
+                                    data-currency=""
                                     validator='{"required":true,"type":"number","min":1}'
                                     error-messages='{"required":"El monto es requerido","type":"Ingresa un número válido","min":"El monto debe ser mayor a 0."}'>
                                 </lender-input>
@@ -108,6 +109,10 @@ export class NewLoanView extends HTMLElement {
     }
 
     connectedCallback() {
+        if (!store.isCurrencySelected()) {
+            NotificationPanel.show('No has seleccionado divisa. Se usará Peso Colombiano (COP). Puedes cambiarlo en el menú lateral.');
+        }
+
         this.querySelector('#new-loan-form').addEventListener('submit', (e) => {
             e.preventDefault();
             this.handleFormSubmit();
@@ -144,9 +149,9 @@ export class NewLoanView extends HTMLElement {
         const name = nameInput.value;
         const email = this.querySelector('#borrower-email').value;
         const phone = this.querySelector('#borrower-phone').value;
-        const amount = parseFloat(amountInput.value.replace(/,/g, ''));
+        const amount = amountInput.numericValue;
         const scheme = this.querySelector('#loan-scheme').value;
-        const interest = scheme === 'interest-free' ? 0 : parseFloat(interestInput.value.replace(/,/g, '')) || 0;
+        const interest = scheme === 'interest-free' ? 0 : interestInput.numericValue || 0;
         const startDate = startDateInput.value;
         const deadlineDate = deadlineDateInput.value;
 
@@ -183,6 +188,7 @@ export class NewLoanView extends HTMLElement {
             schedule: schedule,
             paymentsHistory: [],
             status: 'active',
+            currency: store.getCurrency(),
             createdAt: new Date().toISOString()
         };
 

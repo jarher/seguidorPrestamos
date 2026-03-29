@@ -1,4 +1,5 @@
 import { store } from '../services/store.js';
+import { sanitize } from '../utils/sanitize.js';
 
 export class EditBorrowerView extends HTMLElement {
     constructor() {
@@ -30,9 +31,9 @@ export class EditBorrowerView extends HTMLElement {
             return;
         }
 
-        const safeBorrowerName = DOMPurify.sanitize(loan.borrowerName || '', { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
-        const safeEmail = DOMPurify.sanitize(loan.email || '', { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
-        const safePhone = DOMPurify.sanitize(loan.phone || '', { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
+        const safeBorrowerName = sanitize(loan.borrowerName || '');
+        const safeEmail = sanitize(loan.email || '');
+        const safePhone = sanitize(loan.phone || '');
 
         this.innerHTML = `
             <div class="dashboard-wrapper">

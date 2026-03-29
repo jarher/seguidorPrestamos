@@ -1,6 +1,7 @@
 import { store } from '../services/store.js';
 import { formatCurrency } from '../utils/calculations.js';
 import { ReportService } from '../services/ReportService.js';
+import { sanitize } from '../utils/sanitize.js';
 
 export class LoansListView extends HTMLElement {
     constructor() {
@@ -51,12 +52,12 @@ export class LoansListView extends HTMLElement {
                 <div class="stats-grid-vivid" style="grid-template-columns: repeat(3, 1fr);">
                     <div class="stat-card glass accent-line" style="--accent-color: #10B981">
                         <div class="stat-header"><h3>Intereses Ganados</h3></div>
-                        <p class="stat-value vivid-text" style="color: #10B981">${formatCurrency(totalInterestEarned)}</p>
+                        <p class="stat-value vivid-text" style="color: #10B981">${formatCurrency(store.convertForDisplay(totalInterestEarned, store.getCurrency()), store.getDisplayCurrency())}</p>
                         <span class="stat-subtext">Total histórico cobrado</span>
                     </div>
                     <div class="stat-card glass accent-line" style="--accent-color: #06B6D4">
                         <div class="stat-header"><h3>Capital en Juego</h3></div>
-                        <p class="stat-value vivid-text" style="color: #06B6D4">${formatCurrency(activeCapital)}</p>
+                        <p class="stat-value vivid-text" style="color: #06B6D4">${formatCurrency(store.convertForDisplay(activeCapital, store.getCurrency()), store.getDisplayCurrency())}</p>
                         <span class="stat-subtext">Activo corriente</span>
                     </div>
                     <div class="stat-card glass accent-line" style="--accent-color: #F59E0B">
@@ -93,9 +94,9 @@ export class LoansListView extends HTMLElement {
                     const loanInterest = (loan.paymentsHistory || []).reduce((acc, p) => acc + (parseFloat(p.interest) || 0), 0);
                     const statusClass = this.getStatusClass(loan);
                     const statusLabel = this.getStatusLabel(loan);
-                    const safeBorrowerName = DOMPurify.sanitize(loan.borrowerName || '', { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
-                    const safeReferenceId = DOMPurify.sanitize(loan.referenceId || '', { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
-                    const safeLoanId = DOMPurify.sanitize(loan.id || '', { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
+                    const safeBorrowerName = sanitize(loan.borrowerName || '');
+                    const safeReferenceId = sanitize(loan.referenceId || '');
+                    const safeLoanId = sanitize(loan.id || '');
 
                     return `
                                         <tr>
@@ -105,8 +106,8 @@ export class LoansListView extends HTMLElement {
                                                     <span style="font-weight:600">${safeBorrowerName}</span>
                                                 </div>
                                             </td>
-                                            <td data-label="Capital">${formatCurrency(loan.amount)}</td>
-                                            <td data-label="Int. Pagados" class="accent-green">${formatCurrency(loanInterest)}</td>
+                                            <td data-label="Capital">${formatCurrency(store.convertForDisplay(loan.amount, store.getCurrency()), store.getDisplayCurrency())}</td>
+                                            <td data-label="Int. Pagados" class="accent-green">${formatCurrency(store.convertForDisplay(loanInterest, store.getCurrency()), store.getDisplayCurrency())}</td>
                                             <td data-label="Esquema" style="font-size:0.8rem">${loan.scheme === 'fixed' ? 'CUOTA FIJA' : 'CUOTA DECRECIENTE'}</td>
                                             <td data-label="Estado"><span class="badge ${statusClass}">${statusLabel}</span></td>
                                             <td data-label="Acciones">

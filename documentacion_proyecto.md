@@ -43,9 +43,11 @@ Hemos consolidado la capa de datos y la lógica de negocio en una API REST robus
 
 - **Servidor Integrado (Node.js/Express)**: Ubicado en `/api/index.js`, este servidor actúa como el punto de entrada único. Proporciona seguridad mediante **Helmet** (cabeceras seguras), **CORS** y **Rate Limiting** para proteger contra ataques de fuerza bruta en el login.
 - **Modelado de Datos (Mongoose)**:
-    - **Esquema de Usuario**: Sincronizado con la base de datos existente mediante el campo `passwordHash`. Incluye hooks para el hasheo automático de contraseñas nuevas y métodos de comparación.
+    - **Esquema de Usuario**: Sincronizado con la base de datos existente mediante el campo `passwordHash`. Incluye hooks para el hasheo automático de contraseñas nuevas, métodos de comparación y validaciones en español (formato de correo, longitud mínima de nombre y contraseña).
     - **Esquema de Préstamos**: Implementa una relación con el `userId`, permitiendo que cada prestamista vea únicamente sus propios datos.
 - **Sistema de Idempotencia**: Se implementó un middleware que utiliza el encabezado `Idempotency-Key` (obligatorio para `POST` críticos). Esto garantiza que, ante reintentos de red, no se dupliquen registros de préstamos o pagos.
+- **Validación de Entrada**: Las rutas de autenticación (`/api/auth`) validan formato de correo, fortaleza de contraseña (8+ caracteres, mayúscula, minúscula, número, carácter especial) y campos requeridos antes de interactuar con la base de datos. Los errores de validación devuelven código 400; registros duplicados devuelven código 409.
+- **Mensajes en Español**: Todas las respuestas de error de la API están en español para consistencia con la interfaz del cliente.
 - **Gestión de Sesiones (JWT)**: Uso de **JSON Web Tokens** firmados para la autorización. El cliente almacena el token de acceso y lo envía en el encabezado `Authorization`.
 - **Estructura de la API**:
     - `/api/auth`: Registro, login y logout.
@@ -91,4 +93,4 @@ Entrada usuario → Middleware Auth (JWT) → Middleware Idempotencia
 
 
 ---
-*Documentación generada el 13 de marzo de 2026. Actualizada el 22 de marzo de 2026.*
+*Documentación generada el 13 de marzo de 2026. Actualizada el 26 de marzo de 2026.*

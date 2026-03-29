@@ -2,7 +2,8 @@ import { store } from '../services/store.js';
 import { formatCurrency } from '../utils/calculations.js';
 import { NotificationPanel } from './NotificationPanel.js';
 import { ReportService } from '../services/ReportService.js';
-import { getBorrowerColorIndex } from '../utils/borrowerColors.js';
+import { BORROWER_PALETTE, getBorrowerColorIndex } from '../utils/borrowerColors.js';
+import { sanitize } from '../utils/sanitize.js';
 
 export class BorrowerDetailView extends HTMLElement {
     constructor() {
@@ -22,6 +23,9 @@ export class BorrowerDetailView extends HTMLElement {
     }
 
     connectedCallback() {
+        if (!store.isCurrencySelected()) {
+            NotificationPanel.show('No has seleccionado divisa. Se usará Peso Colombiano (COP). Puedes cambiarlo en el menú lateral.');
+        }
         this.render();
         store.subscribe(() => this.render());
     }
@@ -47,10 +51,12 @@ export class BorrowerDetailView extends HTMLElement {
         const colorIdx = getBorrowerColorIndex(loan.color);
         const statusLabel = this.getStatusLabel(loan);
         const statusClass = this.getStatusClass(loan);
-        const safeBorrowerName = DOMPurify.sanitize(loan.borrowerName || '', { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
-        const safeEmail = DOMPurify.sanitize(loan.email || '', { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
-        const safePhone = DOMPurify.sanitize(loan.phone || '', { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
-        const safeReferenceId = DOMPurify.sanitize(loan.referenceId || loan.id.slice(-6), { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
+        const safeBorrowerName = sanitize(loan.borrowerName || '');
+        const safeEmail = sanitize(loan.email || '');
+        const safePhone = sanitize(loan.phone || '');
+        const safeReferenceId = sanitize(loan.referenceId || loan.id.slice(-6));
+        const borrowerColor = BORROWER_PALETTE[colorIdx] || BORROWER_PALETTE[0];
+        this.safeBorrowerName = safeBorrowerName;
 
         this.innerHTML = `
             <div class="dashboard-wrapper">
@@ -89,21 +95,21 @@ export class BorrowerDetailView extends HTMLElement {
                                     <h3>Total Prestado</h3>
                                     <span class="stat-icon">💰</span>
                                 </div>
-                                <p class="stat-value">${formatCurrency(loan.amount)}</p>
+                                <p class="stat-value">${formatCurrency(store.convertForDisplay(loan.amount, store.getCurrency()), store.getDisplayCurrency())}</p>
                                 <span class="stat-trend positive">↑ 12% sobre inicial</span>
                             </div>
                             <div class="stat-card glass accent-line" style="--accent-color: ${borrowerColor}">
                                 <div class="stat-header">
                                     <h3>Interés Acumulado</h3>
                                 </div>
-                                <p class="stat-value vivid-text" style="color: ${borrowerColor}">${formatCurrency(totalPaidInterest)}</p>
-                                <span class="stat-subtext">Tasa Fija del ${loan.interest}%</span>
+                                <p class="stat-value vivid-text" style="color: ${borrowerColor}">${formatCurrency(store.convertForDisplay(totalPaidInterest, store.getCurrency()), store.getDisplayCurrency())}</p>
+                                <span class="stat-subtext">Tasa Fija del ${loan.interestRate || loan.interest || 0}%</span>
                             </div>
                             <div class="stat-card glass">
                                 <div class="stat-header">
                                     <h3>Restante</h3>
                                 </div>
-                                <p class="stat-value">${formatCurrency(currentBalance)}</p>
+                                <p class="stat-value">${formatCurrency(store.convertForDisplay(currentBalance, store.getCurrency()), store.getDisplayCurrency())}</p>
                                 <div class="progress-container-vivid">
                                     <div class="progress-bar-vivid borrower-accent--${colorIdx}" style="width: ${100 - remainingPercentage}%"></div>
                                 </div>
@@ -133,7 +139,7 @@ export class BorrowerDetailView extends HTMLElement {
                                                 <tr>
                                                     <td>${new Date(p.date).toLocaleDateString('es-ES', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
                                                     <td>Cuota Capital</td>
-                                                    <td class="font-bold">${formatCurrency(parseFloat(p.capital) + parseFloat(p.interest))}</td>
+                                                    <td class="font-bold">${formatCurrency(store.convertForDisplay(parseFloat(p.capital) + parseFloat(p.interest), store.getCurrency()), store.getDisplayCurrency())}</td>
                                                     <td><span class="badge-vivid badge-success-vivid">PAGADO</span></td>
                                                 </tr>
                                             `).reverse().join('')
@@ -153,6 +159,7 @@ export class BorrowerDetailView extends HTMLElement {
                                         label="Capital" 
                                         type="text" 
                                         placeholder="0" 
+                                        data-currency=""
                                         validator='{"type":"number","min":0}'
                                         error-messages='{"type":"Ingresa un número válido","min":"El valor no puede ser negativo."}'>
                                     </lender-input>
@@ -161,6 +168,7 @@ export class BorrowerDetailView extends HTMLElement {
                                         label="Interés" 
                                         type="text" 
                                         placeholder="0" 
+                                        data-currency=""
                                         validator='{"type":"number","min":0}'
                                         error-messages='{"type":"Ingresa un número válido","min":"El valor no puede ser negativo."}'>
                                     </lender-input>
@@ -298,8 +306,8 @@ export class BorrowerDetailView extends HTMLElement {
 
                 if (!isCapitalValid || !isInterestValid || !isDateValid) return;
 
-                const capital = parseFloat(capitalInput.value.replace(/,/g, '')) || 0;
-                const interest = parseFloat(interestInput.value.replace(/,/g, '')) || 0;
+                const capital = capitalInput.numericValue;
+                const interest = interestInput.numericValue;
                 const date = dateInput.value;
                 const nextDeadline = nextDeadlineInput.value;
 
@@ -322,7 +330,7 @@ export class BorrowerDetailView extends HTMLElement {
                     });
                 }
 
-                NotificationPanel.show(`Los cambios en ${safeBorrowerName} han sido registrados satisfactoriamente`);
+                NotificationPanel.show(`Los cambios en ${this.safeBorrowerName || 'el prestatario'} han sido registrados satisfactoriamente`);
 
                 paymentForm.reset();
                 this.querySelector('#pay-date').value = new Date().toISOString().split('T')[0];

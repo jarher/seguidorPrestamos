@@ -80,10 +80,11 @@ app.get(/.*/, (req, res) => {
 
 // Error Handler
 app.use((err, req, res, next) => {
+  console.error('Unhandled error:', err.message);
   console.error(err.stack);
   res.status(500).json({ 
-    message: 'Internal Server Error',
-    error: process.env.NODE_ENV === 'development' ? err.message : {}
+    message: 'Error interno del servidor',
+    error: process.env.NODE_ENV === 'development' ? err.message : undefined,
   });
 });
 

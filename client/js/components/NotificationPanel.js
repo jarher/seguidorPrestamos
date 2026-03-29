@@ -1,3 +1,5 @@
+import { sanitize } from "../utils/sanitize.js";
+
 export class NotificationPanel {
     static show(message, onClose = null) {
         // Eliminar notificación existente si la hay
@@ -9,7 +11,7 @@ export class NotificationPanel {
         const panel = document.createElement('div');
         panel.className = 'notification-panel';
 
-        const sanitizedMessage = DOMPurify.sanitize(message, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
+        const sanitizedMessage = sanitize(message);
 
         panel.innerHTML = `
             <div class="notification-content">

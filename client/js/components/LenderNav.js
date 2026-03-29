@@ -1,5 +1,6 @@
 import { store } from '../services/store.js';
 import { logout, getSession } from '../services/authClient.js';
+import { sanitize } from '../utils/sanitize.js';
 
 export class LenderNav extends HTMLElement {
     constructor() {
@@ -12,16 +13,14 @@ export class LenderNav extends HTMLElement {
         this.render();
     }
 
-    disconnectedCallback() {
-        if (this.unsubscribe) this.unsubscribe();
-    }
-
     render() {
         const session = store.getState().session || getSession();
         const isAuthed = Boolean(session?.token);
         const rawUserName = session?.user?.fullName || 'Usuario';
-        const userName = DOMPurify.sanitize(rawUserName, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
+        const userName = sanitize(rawUserName);
         const initials = userName.split(' ').filter(Boolean).slice(0, 2).map(p => p[0].toUpperCase()).join('') || 'U';
+        const currentCurrency = store.getCurrency();
+        const currentDisplayCurrency = store.getDisplayCurrency();
 
         this.innerHTML = `
             <nav class="sidebar glass">
@@ -46,6 +45,22 @@ export class LenderNav extends HTMLElement {
                         <span class="icon">➕</span>
                         <span class="text">Nuevo Préstamo</span>
                     </li>
+                    <li data-no-nav>
+                        <span class="nav-label">Seleccionar divisa</span>
+                        <select id="currency-select" class="glass-select glass-select-sm" title="Tipo de divisa">
+                            <option value="COP" ${currentCurrency === 'COP' ? 'selected' : ''}>$ COP</option>
+                            <option value="USD" ${currentCurrency === 'USD' ? 'selected' : ''}>$ USD</option>
+                            <option value="EUR" ${currentCurrency === 'EUR' ? 'selected' : ''}>€ EUR</option>
+                        </select>
+                    </li>
+                    <li data-no-nav class="display-currency-block">
+                        <span class="nav-label">Equivalente de ${currentCurrency}</span>
+                        <select id="display-currency-select" class="glass-select glass-select-sm" title="Divisa de visualización">
+                            <option value="COP" ${currentDisplayCurrency === 'COP' ? 'selected' : ''}>COP - Peso</option>
+                            <option value="USD" ${currentDisplayCurrency === 'USD' ? 'selected' : ''}>USD - Dólar</option>
+                            <option value="EUR" ${currentDisplayCurrency === 'EUR' ? 'selected' : ''}>EUR - Euro</option>
+                        </select>
+                    </li>
                 </ul>
                 <div class="user-profile">
                     <div class="user-info-section">
@@ -55,7 +70,7 @@ export class LenderNav extends HTMLElement {
                             <p class="role">${isAuthed ? 'Sesión activa' : 'Inicia sesión'}</p>
                         </div>
                     </div>
-                    <div class="user-profile__actions">        
+                    <div class="user-profile__actions">
                         <button id="theme-toggle" class="btn-theme-toggle" title="Cambiar tema">
                             <span class="material-icons">dark_mode</span>
                         </button>
@@ -65,7 +80,7 @@ export class LenderNav extends HTMLElement {
             </nav>
         `;
 
-        this.querySelectorAll('.nav-links li').forEach(li => {
+        this.querySelectorAll('.nav-links li:not([data-no-nav])').forEach(li => {
             li.addEventListener('click', () => {
                 this.querySelectorAll('.nav-links li').forEach(el => el.classList.remove('active'));
                 li.classList.add('active');
@@ -91,6 +106,24 @@ export class LenderNav extends HTMLElement {
             const theme = document.body.classList.contains('light-theme') ? 'light' : 'dark';
             localStorage.setItem('lender_theme', theme);
         });
+
+        // Currency selector
+        const currencySelect = this.querySelector('#currency-select');
+        if (currencySelect) {
+            currencySelect.addEventListener('change', () => {
+                store.setCurrency(currencySelect.value);
+            });
+        }
+
+        // Display currency selector
+        const displayCurrencySelect = this.querySelector('#display-currency-select');
+        if (displayCurrencySelect) {
+            displayCurrencySelect.addEventListener('change', async () => {
+                const value = displayCurrencySelect.value;
+                store.setDisplayCurrency(value);
+                await store.fetchRatesIfNeeded();
+            });
+        }
 
         // Load persisted theme
         if (localStorage.getItem('lender_theme') === 'light') {

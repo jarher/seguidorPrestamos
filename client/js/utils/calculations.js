@@ -82,12 +82,29 @@ export const calculateFlatLoanSchedule = (principal, monthlyInterestRate, numPay
     return schedule;
 };
 
-export const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('es-CO', {
+export const CURRENCY_CONFIG = {
+    COP: { locale: 'es-CO', currency: 'COP', minimumFractionDigits: 0, symbol: '$' },
+    USD: { locale: 'en-US', currency: 'USD', minimumFractionDigits: 2, symbol: '$' },
+    EUR: { locale: 'de-DE', currency: 'EUR', minimumFractionDigits: 2, symbol: '€' },
+};
+
+export const formatCurrency = (amount, currency = 'COP') => {
+    const cfg = CURRENCY_CONFIG[currency] || CURRENCY_CONFIG.COP;
+    return new Intl.NumberFormat(cfg.locale, {
         style: 'currency',
-        currency: 'COP',
-        minimumFractionDigits: 0
+        currency: cfg.currency,
+        minimumFractionDigits: cfg.minimumFractionDigits,
     }).format(amount);
+};
+
+export const formatInputNumber = (digits, currency = 'COP') => {
+    const cfg = CURRENCY_CONFIG[currency] || CURRENCY_CONFIG.COP;
+    const num = parseInt(digits, 10) || 0;
+    if (num === 0) return '';
+    return new Intl.NumberFormat(cfg.locale, {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+    }).format(num);
 };
 
 /**

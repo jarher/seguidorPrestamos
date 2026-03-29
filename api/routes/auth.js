@@ -9,105 +9,141 @@ const router = express.Router();
 const registerLimiter = rateLimit({
   windowMs: Number(process.env.AUTH_RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000,
   max: Number(process.env.AUTH_RATE_LIMIT_REGISTER_MAX) || 5,
-  message: { message: 'Too many accounts created from this IP, please try again after 15 minutes' },
+  message: { message: 'Demasiadas cuentas creadas desde esta IP, intente más tarde' },
 });
 
 const loginLimiter = rateLimit({
   windowMs: Number(process.env.AUTH_RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000,
   max: Number(process.env.AUTH_RATE_LIMIT_LOGIN_MAX) || 10,
-  message: { message: 'Too many login attempts from this IP, please try again after 15 minutes' },
+  message: { message: 'Demasiados intentos de inicio de sesión, intente más tarde' },
 });
 
-// Helper to generate tokens
-const generateTokens = (user) => {
-  const accessToken = jwt.sign(
+// Generate access token
+const generateToken = (user) => {
+  return jwt.sign(
     { id: user._id, role: user.role },
     process.env.JWT_SECRET,
     { expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRY || '24h' }
   );
-  
-  const refreshToken = jwt.sign(
-    { id: user._id },
-    process.env.JWT_SECRET,
-    { expiresIn: process.env.JWT_REFRESH_TOKEN_EXPIRY || '7d' }
-  );
-
-  return { accessToken, refreshToken };
 };
+
+// Helper to validate email format
+const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+// Helper to validate password strength
+const validatePassword = (password) => {
+  const errors = [];
+  if (!password || password.length < 8) {
+    errors.push('La contraseña debe tener al menos 8 caracteres');
+  }
+  if (password && !/[A-Z]/.test(password)) {
+    errors.push('Debe contener al menos una letra mayúscula');
+  }
+  if (password && !/[a-z]/.test(password)) {
+    errors.push('Debe contener al menos una letra minúscula');
+  }
+  if (password && !/[0-9]/.test(password)) {
+    errors.push('Debe contener al menos un número');
+  }
+  if (password && !/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+    errors.push('Debe contener al menos un carácter especial');
+  }
+  return errors;
+};
+
+// Build user response object
+const userResponse = (user) => ({
+  id: user._id,
+  email: user.email,
+  fullName: user.fullName,
+  role: user.role,
+});
 
 // @route   POST /api/auth/register
 // @desc    Register a new user
 router.post('/register', registerLimiter, async (req, res) => {
-  const { email, password, fullName } = req.body;
-
   try {
-    const userExists = await User.findOne({ email });
-    if (userExists) {
-      return res.status(400).json({ message: 'User already exists' });
+    const { email, password, fullName } = req.body;
+
+    const validationErrors = [];
+    if (!email || !isValidEmail(email)) {
+      validationErrors.push('Correo electrónico no válido');
+    }
+    if (!fullName || fullName.trim().length < 3) {
+      validationErrors.push('El nombre debe tener al menos 3 caracteres');
+    }
+    if (!password) {
+      validationErrors.push('La contraseña es requerida');
+    } else {
+      validationErrors.push(...validatePassword(password));
     }
 
-    const user = await User.create({ email, passwordHash: password, fullName });
-    const { accessToken, refreshToken } = generateTokens(user);
+    if (validationErrors.length > 0) {
+      return res.status(400).json({ message: validationErrors[0], errors: validationErrors });
+    }
+
+    const userExists = await User.findOne({ email: email.toLowerCase().trim() });
+    if (userExists) {
+      return res.status(409).json({ message: 'Ya existe una cuenta con este correo electrónico' });
+    }
+
+    const user = await User.create({
+      email: email.toLowerCase().trim(),
+      passwordHash: password,
+      fullName: fullName.trim(),
+    });
 
     res.status(201).json({
-      token: accessToken,
-      refreshToken,
-      user: {
-        id: user._id,
-        email: user.email,
-        fullName: user.fullName,
-        role: user.role,
-      },
+      token: generateToken(user),
+      user: userResponse(user),
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Register error:', error.message);
+    if (error.name === 'ValidationError') {
+      const messages = Object.values(error.errors).map(e => e.message);
+      return res.status(400).json({ message: messages[0] || 'Datos inválidos' });
+    }
+    if (error.code === 11000) {
+      return res.status(409).json({ message: 'Ya existe una cuenta con este correo electrónico' });
+    }
+    res.status(500).json({ message: 'Error interno del servidor' });
   }
 });
 
 // @route   POST /api/auth/login
-// @desc    Authenticate user & get tokens
+// @desc    Authenticate user & get token
 router.post('/login', loginLimiter, async (req, res) => {
-  const { email, password } = req.body;
-  
-  if (!email || !password) {
-    return res.status(400).json({ message: 'Email and password are required' });
-  }
-
   try {
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(401).json({ message: 'Invalid email or password' });
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Correo y contraseña son requeridos' });
     }
-    
+
+    const user = await User.findOne({ email: email.toLowerCase().trim() });
+    if (!user) {
+      return res.status(401).json({ message: 'Correo o contraseña incorrectos' });
+    }
+
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
-      return res.status(401).json({ message: 'Invalid email or password' });
+      return res.status(401).json({ message: 'Correo o contraseña incorrectos' });
     }
 
-    const { accessToken, refreshToken } = generateTokens(user);
-
     res.json({
-      token: accessToken,
-      refreshToken,
-      user: {
-        id: user._id,
-        email: user.email,
-        fullName: user.fullName,
-        role: user.role,
-      },
+      token: generateToken(user),
+      user: userResponse(user),
     });
   } catch (error) {
-    console.error(`Login error for ${email}:`, error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    console.error('Login error:', error.message);
+    res.status(500).json({ message: 'Error interno del servidor' });
   }
 });
 
 // @route   POST /api/auth/logout
-// @desc    Logout user (optional: blacklist refreshToken)
+// @desc    Logout user
 router.post('/logout', async (req, res) => {
-  // Simple implementation: acknowledge logout
-  // Client should clear local storage
-  res.json({ message: 'Logged out successfully' });
+  res.json({ message: 'Sesión cerrada correctamente' });
 });
 
 export default router;

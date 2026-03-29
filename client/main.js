@@ -13,6 +13,7 @@ import { initNotifications } from './js/services/notifications.js';
 import { AlarmService } from './js/services/AlarmService.js';
 import { store } from './js/services/store.js';
 import { getSession } from './js/services/authClient.js';
+import { sanitize } from './js/utils/sanitize.js';
 
 // Theme Initialization
 if (localStorage.getItem('lender_theme') === 'light') {
@@ -81,14 +82,14 @@ window.addEventListener('view-change', (e) => {
             case 'borrower-detail':
                 if (!isAuthed) { main.innerHTML = '<login-view></login-view>'; break; }
                 {
-                    const safeId = DOMPurify.sanitize(String(data || ''), { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
+                    const safeId = sanitize(String(data || ''));
                     main.innerHTML = `<borrower-detail-view borrower-id="${safeId}"></borrower-detail-view>`;
                 }
                 break;
             case 'edit-borrower':
                 if (!isAuthed) { main.innerHTML = '<login-view></login-view>'; break; }
                 {
-                    const safeId = DOMPurify.sanitize(String(data || ''), { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
+                    const safeId = sanitize(String(data || ''));
                     main.innerHTML = `<edit-borrower-view borrower-id="${safeId}"></edit-borrower-view>`;
                 }
                 break;

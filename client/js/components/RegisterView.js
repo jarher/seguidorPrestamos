@@ -1,6 +1,7 @@
 import { register, getSession } from "../services/authClient.js";
 import { store } from "../services/store.js";
 import { NotificationPanel } from "./NotificationPanel.js";
+import { sanitize } from "../utils/sanitize.js";
 
 export class RegisterView extends HTMLElement {
 
@@ -113,7 +114,7 @@ export class RegisterView extends HTMLElement {
           
           this.hideLoader(); // Ocultar ANTES de la notificación
 
-          const safeName = DOMPurify.sanitize(data.user?.fullName || 'usuario', { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
+          const safeName = sanitize(data.user?.fullName || 'usuario');
           NotificationPanel.show(
             `Cuenta creada. Bienvenido, ${safeName}`,
             () => {

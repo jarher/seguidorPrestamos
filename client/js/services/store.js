@@ -7,6 +7,7 @@
 import { calculateScheduleStatus } from '../utils/calculations.js';
 import { apiRequest } from './apiClient.js';
 import { getSession } from './authClient.js';
+import { ExchangeRateService } from './ExchangeRateService.js';
 
 const LOANS_CACHE_KEY = 'lender_loans_cache';
 const CACHE_EXPIRY_KEY = 'lender_loans_cache_expiry';
@@ -14,13 +15,11 @@ const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes cache
 
 class Store {
     constructor() {
+        const savedSettings = this.loadSettings();
         this.state = {
             loans: [],
             session: getSession(),
-            settings: {
-                theme: 'dark',
-                currency: 'COP'
-            },
+            settings: savedSettings,
             isLoading: false,
             lastSync: null,
             syncError: null,
@@ -28,6 +27,52 @@ class Store {
         };
         this.listeners = [];
         this.pendingActions = [];
+    }
+
+    loadSettings() {
+        try {
+            const saved = localStorage.getItem('lender_settings');
+            if (saved) return JSON.parse(saved);
+        } catch { /* ignore */ }
+        return { theme: 'dark', currency: 'COP', displayCurrency: 'COP' };
+    }
+
+    setCurrency(currency) {
+        this.state.settings.currency = currency;
+        localStorage.setItem('lender_settings', JSON.stringify(this.state.settings));
+        localStorage.setItem('lender_currency_selected', 'true');
+        this.notifyListeners();
+    }
+
+    getCurrency() {
+        return this.state.settings.currency || 'COP';
+    }
+
+    isCurrencySelected() {
+        return localStorage.getItem('lender_currency_selected') === 'true';
+    }
+
+    setDisplayCurrency(currency) {
+        this.state.settings.displayCurrency = currency;
+        localStorage.setItem('lender_settings', JSON.stringify(this.state.settings));
+        this.notifyListeners();
+    }
+
+    getDisplayCurrency() {
+        return this.state.settings.displayCurrency || this.getCurrency();
+    }
+
+    convertForDisplay(amount, fromCurrency) {
+        const to = this.getDisplayCurrency();
+        return ExchangeRateService.convert(amount || 0, fromCurrency || 'COP', to);
+    }
+
+    async fetchRatesIfNeeded() {
+        const base = this.getCurrency();
+        if (!ExchangeRateService.hasRates(base)) {
+            await ExchangeRateService.getRates(base);
+            this.notifyListeners();
+        }
     }
 
     isAuthenticated() {
@@ -40,7 +85,7 @@ class Store {
     }
 
     clearSession() {
-        this.state.session = { token: null, refreshToken: null, user: null };
+        this.state.session = { token: null, user: null };
         this.state.loans = [];
         this.state.lastSync = null;
         localStorage.removeItem(LOANS_CACHE_KEY);
@@ -105,7 +150,7 @@ class Store {
             if (!cached || !expiry) return null;
 
             const age = Date.now() - parseInt(expiry, 10);
-            if (age > CACHE_TTL) {
+            if (age > CACHE_TTL_MS) {
                 return null; // Cache expired
             }
 
