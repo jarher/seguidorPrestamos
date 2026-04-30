@@ -24,7 +24,7 @@
 
 ---
 
-### T-002 — Configurar proyecto backend
+### T-002 — Configurar proyecto backend ✅ DONE [2026-04-30]
 - **Agente:** `backend-builder`
 - **Qué hacer:** `npm init`, instalar dependencias del backend según spec 6.1, crear estructura de carpetas `src/`
 - **Archivos:** `/backend/package.json`, `/backend/src/` (carpetas vacías con `.gitkeep`)
