@@ -40,10 +40,10 @@
 
 ---
 
-### T-003 — Configurar proyecto frontend
+### T-003 — Configurar proyecto frontend ✅ DONE [2026-04-30]
 - **Agente:** `frontend-builder`
 - **Qué hacer:** Crear proyecto Vite + React, instalar dependencias del frontend según spec 6.1
-- **Archivos:** `/frontend/`
+- **Nota:** Tailwind v4 instalado — usa `@tailwindcss/vite` plugin + `@import "tailwindcss"` en CSS (no `tailwind.config.js`)
 - **Comandos:**
   ```bash
   npm create vite@latest frontend -- --template react
@@ -58,7 +58,7 @@
 
 ---
 
-### T-004 — Variables de entorno backend
+### T-004 — Variables de entorno backend ✅ DONE [2026-04-30]
 - **Agente:** `backend-builder`
 - **Qué hacer:** Crear `.env.example` con todas las variables necesarias, crear `src/config/env.js` que valida que todas existan al iniciar
 - **Archivos:** `/backend/.env.example`, `/backend/src/config/env.js`
@@ -88,7 +88,7 @@
 
 ## FASE 1 — Base de Datos
 
-### T-006 — Configurar conexión a PostgreSQL
+### T-006 — Configurar conexión a PostgreSQL ✅ DONE [2026-04-30]
 - **Agente:** `db-architect`
 - **Qué hacer:** Crear `src/config/database.js` con la conexión Sequelize usando `DATABASE_URL` del `.env`
 - **Archivos:** `/backend/src/config/database.js`
@@ -97,17 +97,18 @@
 
 ---
 
-### T-007 — Modelo LenderUser
+### T-007 — Modelo LenderUser ✅ DONE [2026-05-05]
 - **Agente:** `db-architect`
 - **Qué hacer:** Crear modelo Sequelize basado EXACTAMENTE en spec sección 2.1
 - **Archivos:** `/backend/src/models/LenderUser.js`
 - **Checklist:**
-  - [ ] `id` es UUID con `defaultValue: DataTypes.UUIDV4`
-  - [ ] `userEmail` tiene `unique: true` y validación de email
-  - [ ] `userPassword` no tiene `get()` (no transformar el hash)
-  - [ ] `timestamps: true` y `paranoid: true`
-  - [ ] Nombre de tabla: `lender_users` (snake_case)
+  - [x] `id` es UUID con `defaultValue: DataTypes.UUIDV4`
+  - [x] `userEmail` tiene `unique: true` y validación de email
+  - [x] `userPassword` no tiene `get()` (no transformar el hash)
+  - [x] `timestamps: true` y `paranoid: true`
+  - [x] Nombre de tabla: `lender_users` (snake_case)
 - **Done cuando:** `@spec-guardian` confirma que todos los campos coinciden con spec 2.1
+- **`@spec-guardian` aprobado:** todos los campos de spec 2.1 presentes (`id`, `userEmail`, `userPassword`, `userFirstName`, `userLastName`, `createdAt`, `updatedAt`, `deletedAt`). Sin campos extra.
 
 ---
 
