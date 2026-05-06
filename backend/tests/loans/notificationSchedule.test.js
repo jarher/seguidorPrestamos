@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { describe, it, expect, afterAll } from 'vitest';
 import request from 'supertest';
 import { app, LenderUser, Borrower, Loan, Notification, sequelize } from '../testSetup.js';
 import { calculatePaymentSchedule } from '../../src/services/loanCalculator.js';
@@ -13,9 +13,10 @@ describe('Notificaciones de Préstamo - DECREASING_INSTALLMENT (RF-012)', () => 
     await LenderUser.destroy({ where: {}, force: true });
   });
 
+  const genEmail = (prefix) => `${prefix}_${Date.now()}_${Math.random().toString(36).substring(2, 8)}@test.com`;
+
   it('debe generar notificaciones upcoming (-2 días) y due_today por cada cuota', async () => {
-    const timestamp = Date.now();
-    const email = `notif1_${timestamp}@test.com`;
+    const email = genEmail('n1');
 
     const hashedPassword = await require('bcryptjs').hash('password123', 12);
     const lender = await LenderUser.create({
@@ -65,8 +66,7 @@ describe('Notificaciones de Préstamo - DECREASING_INSTALLMENT (RF-012)', () => 
   });
 
   it('debe generar notificacion upcoming 2 días antes del vencimiento', async () => {
-    const timestamp = Date.now() + 1;
-    const email = `notif2_${timestamp}@test.com`;
+    const email = genEmail('n2');
 
     const hashedPassword = await require('bcryptjs').hash('password123', 12);
     const lender = await LenderUser.create({
@@ -79,7 +79,7 @@ describe('Notificaciones de Préstamo - DECREASING_INSTALLMENT (RF-012)', () => 
     const borrower = await Borrower.create({
       lenderId: lender.id,
       borrowerFirstName: 'Maria',
-      borrowerLastName: ' Garcia',
+      borrowerLastName: 'Garcia',
       borrowerEmail: 'maria@test.com',
       borrowerPhone: '+573009999999'
     });
@@ -116,8 +116,7 @@ describe('Notificaciones de Préstamo - DECREASING_INSTALLMENT (RF-012)', () => 
   });
 
   it('debe generar notificacion DUE_TODAY el día del vencimiento', async () => {
-    const timestamp = Date.now() + 2;
-    const email = `notif3_${timestamp}@test.com`;
+    const email = genEmail('n3');
 
     const hashedPassword = await require('bcryptjs').hash('password123', 12);
     const lender = await LenderUser.create({
@@ -163,30 +162,6 @@ describe('Notificaciones de Préstamo - DECREASING_INSTALLMENT (RF-012)', () => 
   });
 
   it('el interés debe disminuir mes a mes (DECREASING)', async () => {
-    const timestamp = Date.now() + 3;
-    const email = `notif4_${timestamp}@test.com`;
-
-    const hashedPassword = await require('bcryptjs').hash('password123', 12);
-    const lender = await LenderUser.create({
-      userEmail: email,
-      userPassword: hashedPassword,
-      userFirstName: 'Test',
-      userLastName: 'Lender'
-    });
-
-    const borrower = await Borrower.create({
-      lenderId: lender.id,
-      borrowerFirstName: 'Ana',
-      borrowerLastName: 'Lopez',
-      borrowerEmail: 'ana@test.com',
-      borrowerPhone: '+573006666666'
-    });
-
-    const loginRes = await request(app)
-      .post('/api/auth/login')
-      .send({ userEmail: email, userPassword: 'password123' });
-    const token = loginRes.body.token;
-
     const schedule = calculatePaymentSchedule({
       principalLoan: 1000000,
       monthlyRate: 0.02,
@@ -201,8 +176,7 @@ describe('Notificaciones de Préstamo - DECREASING_INSTALLMENT (RF-012)', () => 
   });
 
   it('el mensaje debe mostrar principal + interés para DUE_TODAY', async () => {
-    const timestamp = Date.now() + 4;
-    const email = `notif5_${timestamp}@test.com`;
+    const email = genEmail('n5');
 
     const hashedPassword = await require('bcryptjs').hash('password123', 12);
     const lender = await LenderUser.create({
@@ -248,8 +222,7 @@ describe('Notificaciones de Préstamo - DECREASING_INSTALLMENT (RF-012)', () => 
   });
 
   it('debe generar notificacion NO_DUE_DATE_REMINDER cuando no hay maturityDate', async () => {
-    const timestamp = Date.now() + 5;
-    const email = `notif6_${timestamp}@test.com`;
+    const email = genEmail('n6');
 
     const hashedPassword = await require('bcryptjs').hash('password123', 12);
     const lender = await LenderUser.create({
@@ -272,23 +245,17 @@ describe('Notificaciones de Préstamo - DECREASING_INSTALLMENT (RF-012)', () => 
       .send({ userEmail: email, userPassword: 'password123' });
     const token = loginRes.body.token;
 
-    const loanData = {
-      borrowerId: borrower.id,
-      principalLoan: 1000000,
-      monthlyRate: 0.02,
-      loanScheme: 'DECREASING_INSTALLMENT',
-      totalMonths: 6,
-      startDate: startDate
-    };
-
     const loanRes = await request(app)
       .post('/api/loans')
       .set('Authorization', `Bearer ${token}`)
-      .send(loanData);
-
-    if (loanRes.status !== 201) {
-      console.log('Error creating loan:', loanRes.status, loanRes.body);
-    }
+      .send({
+        borrowerId: borrower.id,
+        principalLoan: 1000000,
+        monthlyRate: 0.02,
+        loanScheme: 'DECREASING_INSTALLMENT',
+        totalMonths: 6,
+        startDate: startDate
+      });
 
     const noDueDateNotification = await Notification.findOne({
       where: { loanId: loanRes.body.loan.id, type: 'NO_DUE_DATE_REMINDER' }
@@ -299,8 +266,7 @@ describe('Notificaciones de Préstamo - DECREASING_INSTALLMENT (RF-012)', () => 
   });
 
   it('debe generar exactamente 2 notificaciones por cuota (upcoming + due_today)', async () => {
-    const timestamp = Date.now() + 6;
-    const email = `notif7_${timestamp}@test.com`;
+    const email = genEmail('n7');
 
     const hashedPassword = await require('bcryptjs').hash('password123', 12);
     const lender = await LenderUser.create({
