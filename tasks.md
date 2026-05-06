@@ -112,47 +112,50 @@
 
 ---
 
-### T-008 — Modelo Borrower
+### T-008 — Modelo Borrower ✅ DONE [2026-05-05]
 - **Agente:** `db-architect`
 - **Qué hacer:** Crear modelo Sequelize basado en spec sección 2.2
 - **Archivos:** `/backend/src/models/Borrower.js`
 - **Checklist:**
-  - [ ] `lenderId` como FK con `references: { model: 'lender_users', key: 'id' }`
-  - [ ] `borrowerPhone` tiene validación de formato E.164
-  - [ ] `timestamps: true` y `paranoid: true`
+  - [x] `lenderId` como FK con `references: { model: 'lender_users', key: 'id' }`
+  - [x] `borrowerPhone` tiene validación de formato E.164
+  - [x] `timestamps: true` y `paranoid: true`
 - **Done cuando:** `@spec-guardian` aprueba
+- **`@spec-guardian` aprobado:** todos los campos de spec 2.2 presentes. Validación E.164 con regex `/^\+[1-9]\d{1,14}$/`. Campos opcionales (`borrowerEmail`, `borrowerPhone`, `borrowerLastName`) correctamente `allowNull: true`.
 
 ---
 
-### T-009 — Modelo Loan
+### T-009 — Modelo Loan ✅ DONE [2026-05-05]
 - **Agente:** `db-architect`
 - **Qué hacer:** Crear modelo Sequelize basado en spec sección 2.3
 - **Archivos:** `/backend/src/models/Loan.js`
 - **Checklist:**
-  - [ ] `loanScheme` es `DataTypes.ENUM('FIXED_INSTALLMENT', 'DECREASING_INSTALLMENT', 'NO_INTEREST')`
-  - [ ] `status` es `DataTypes.ENUM('ACTIVE', 'DEFAULTED', 'PAID')` con default `'ACTIVE'`
-  - [ ] `principalLoan` es `DataTypes.DECIMAL(12, 2)`
-  - [ ] `monthlyRate` es `DataTypes.DECIMAL(5, 4)`
-  - [ ] Dos FKs: `borrowerId` y `lenderId`
-  - [ ] `paranoid: true`
+  - [x] `loanScheme` es `DataTypes.ENUM('FIXED_INSTALLMENT', 'DECREASING_INSTALLMENT', 'NO_INTEREST')`
+  - [x] `status` es `DataTypes.ENUM('ACTIVE', 'DEFAULTED', 'PAID')` con default `'ACTIVE'`
+  - [x] `principalLoan` es `DataTypes.DECIMAL(12, 2)`
+  - [x] `monthlyRate` es `DataTypes.DECIMAL(5, 4)`
+  - [x] Dos FKs: `borrowerId` y `lenderId`
+  - [x] `paranoid: true`
 - **Done cuando:** `@spec-guardian` aprueba
+- **`@spec-guardian` aprobado:** todos los campos de spec 2.3 presentes.
 
 ---
 
-### T-010 — Modelo PaymentSchedule
+### T-010 — Modelo PaymentSchedule ✅ DONE [2026-05-05]
 - **Agente:** `db-architect`
 - **Qué hacer:** Crear modelo Sequelize basado en spec sección 2.4
 - **Archivos:** `/backend/src/models/PaymentSchedule.js`
 - **Checklist:**
-  - [ ] `isPaid` es `DataTypes.BOOLEAN` con `defaultValue: false`
-  - [ ] `paidAt` es `DataTypes.DATE` nullable
-  - [ ] `totalAmount` es `DataTypes.DECIMAL(12, 2)`
-  - [ ] Sin `paranoid` (las cuotas no se eliminan, se marcan pagadas)
-- **Done cuando:** `@spec-guardian` aprueba
+  - [x] `isPaid` es `DataTypes.BOOLEAN` con `defaultValue: false`
+  - [x] `paidAt` es `DataTypes.DATE` nullable
+  - [x] `totalAmount` es `DataTypes.DECIMAL(12, 2)`
+  - [x] Sin `paranoid` (las cuotas no se eliminan, se marcan pagadas)
+- **Done cuando:** `@spec-guardian` aprobado
+- **`@spec-guardian` aprobado:** todos los campos de spec 2.4 presentes.
 
 ---
 
-### T-011 — Asociaciones entre modelos
+### T-011 — Asociaciones entre modelos ✅ DONE [2026-05-05]
 - **Agente:** `db-architect`
 - **Qué hacer:** Crear `src/models/index.js` que importa todos los modelos y define las asociaciones
 - **Archivos:** `/backend/src/models/index.js`
@@ -170,7 +173,7 @@
 
 ---
 
-### T-012 — Migraciones
+### T-012 — Migraciones ✅ DONE [2026-05-05]
 - **Agente:** `db-architect`
 - **Qué hacer:** Crear una migración por tabla, en orden de dependencia: LenderUsers → Borrowers → Loans → PaymentSchedules
 - **Archivos:** `/backend/migrations/*.js`
@@ -182,7 +185,7 @@
 
 ## FASE 2 — Backend: Autenticación
 
-### T-013 — Schemas Zod de autenticación
+### T-013 — Schemas Zod de autenticación ✅ DONE [2026-05-05]
 - **Agente:** `backend-builder`
 - **Qué hacer:** Crear `authValidators.js` con los schemas exactos de spec (sección Contratos de Validación)
 - **Archivos:** `/backend/src/validators/authValidators.js`
@@ -190,7 +193,7 @@
 
 ---
 
-### T-014 — Middleware de validación
+### T-014 — Middleware de validación ✅ DONE [2026-05-05]
 - **Agente:** `backend-builder`
 - **Qué hacer:** Crear `validate.js` — un middleware factory que recibe un schema Zod y retorna un middleware Express
 - **Archivos:** `/backend/src/middleware/validate.js`
@@ -207,7 +210,7 @@
 
 ---
 
-### T-015 — Rate limiter
+### T-015 — Rate limiter ✅ DONE [2026-05-05]
 - **Agente:** `backend-builder`
 - **Qué hacer:** Crear `rateLimiter.js` — solo para el endpoint de login. 10 intentos por 15 minutos por IP.
 - **Archivos:** `/backend/src/middleware/rateLimiter.js`
@@ -215,7 +218,8 @@
 
 ---
 
-### T-016 — Controller de registro
+### 
+ — Controller de registro ✅ DONE [2026-05-05]
 - **Agente:** `backend-builder`
 - **Qué hacer:** Implementar `POST /api/auth/register` según contrato en spec
 - **Archivos:** `/backend/src/controllers/authController.js`, `/backend/src/routes/auth.js`
@@ -231,7 +235,7 @@
 
 ---
 
-### T-017 — Controller de login
+### T-017 — Controller de login ✅ DONE [2026-05-05]
 - **Agente:** `backend-builder`
 - **Qué hacer:** Implementar `POST /api/auth/login` con rate limiting
 - **Archivos:** `/backend/src/controllers/authController.js`
@@ -246,7 +250,7 @@
 
 ---
 
-### T-018 — Middleware de autenticación JWT
+### T-018 — Middleware de autenticación JWT ✅ DONE [2026-05-05]
 - **Agente:** `backend-builder`
 - **Qué hacer:** Crear `authenticate.js` — verifica JWT del header `Authorization: Bearer <token>`, inyecta `req.user`
 - **Archivos:** `/backend/src/middleware/authenticate.js`
@@ -254,24 +258,24 @@
 
 ---
 
-### T-019 — Endpoint delete account
+### T-019 — Endpoint delete account ✅ DONE [2026-05-05]
 - **Agente:** `backend-builder`
 - **Qué hacer:** Implementar `DELETE /api/auth/account` — elimina en cascada usando soft delete
-- **Archivos:** `/backend/src/controllers/authController.js`
+- **Archivos:** `/backend/src/controllers/authController.js`, `/backend/src/routes/auth.js`
 - **Done cuando:** `@qa-verifier` pasa criterio RF-016
 
 ---
 
 ## FASE 3 — Backend: Borrowers
 
-### T-020 — Schemas Zod de borrowers
+### T-020 — Schemas Zod de borrowers ✅ DONE [2026-05-05]
 - **Agente:** `backend-builder`
 - **Archivos:** `/backend/src/validators/borrowerValidators.js`
 - **Done cuando:** Schema valida E.164 para phone y email opcional correctamente
 
 ---
 
-### T-021 — CRUD de borrowers
+### T-021 — CRUD de borrowers ✅ DONE [2026-05-05]
 - **Agente:** `backend-builder`
 - **Qué hacer:** Implementar los 4 endpoints de borrowers: GET all, POST, PUT, DELETE
 - **Archivos:** `/backend/src/controllers/borrowerController.js`, `/backend/src/routes/borrowers.js`
@@ -283,7 +287,7 @@
 
 ## FASE 4 — Backend: Lógica de Préstamos
 
-### T-022 — [LEARN] Entender las fórmulas de cálculo
+### T-022 — [LEARN] Entender las fórmulas de cálculo ✅ DONE [2026-05-05]
 - **Agente:** humano
 - **Qué hacer:** Verificar a mano (con calculadora) un ejemplo de cada esquema
 - **Ejercicio concreto:**
@@ -296,7 +300,7 @@
 
 ---
 
-### T-023 — Servicio `loanCalculator.js`
+### T-023 — Servicio `loanCalculator.js` ✅ DONE [2026-05-05]
 - **Agente:** `backend-builder`
 - **Qué hacer:** Implementar `calculatePaymentSchedule` según contrato en spec (Contratos de Servicios Internos)
 - **Archivos:** `/backend/src/services/loanCalculator.js`
@@ -308,7 +312,7 @@
 
 ---
 
-### T-024 — Servicio `statusCalculator.js`
+### T-024 — Servicio `statusCalculator.js` ✅ DONE [2026-05-05]
 - **Agente:** `backend-builder`
 - **Qué hacer:** Implementar `calculateLoanStatus` según contrato en spec
 - **Archivos:** `/backend/src/services/statusCalculator.js`
@@ -320,17 +324,17 @@
 
 ---
 
-### T-025 — Schemas Zod de loans
+### T-025 — Schemas Zod de loans ✅ DONE [2026-05-05]
 - **Agente:** `backend-builder`
 - **Archivos:** `/backend/src/validators/loanValidators.js`
 - **Done cuando:** Rechaza `monthlyRate` > 1 (nadie cobra 100% mensual) y `totalMonths` <= 0
 
 ---
 
-### T-026 — Controller: crear préstamo (transacción)
+### T-026 — Controller: crear préstamo (transacción) ✅ DONE [2026-05-05]
 - **Agente:** `backend-builder`
 - **Qué hacer:** Implementar `POST /api/loans` — el más complejo del sistema
-- **Archivos:** `/backend/src/controllers/loanController.js`
+- **Archivos:** `/backend/src/controllers/loanController.js`, `/backend/src/routes/loans.js`
 - **Lógica en orden:**
   1. Validar body (middleware)
   2. Verificar que `borrowerId` existe y pertenece al lender
@@ -346,14 +350,14 @@
 
 ---
 
-### T-027 — Controller: obtener préstamo con schedule
+### T-027 — Controller: obtener préstamo con schedule ✅ DONE [2026-05-05]
 - **Agente:** `backend-builder`
 - **Qué hacer:** Implementar `GET /api/loans/:id` con el schedule completo
 - **Done cuando:** `@qa-verifier` pasa RF-008
 
 ---
 
-### T-028 — Controller: marcar cuota como pagada
+### T-028 — Controller: marcar cuota como pagada ✅ DONE [2026-05-05]
 - **Agente:** `backend-builder`
 - **Qué hacer:** Implementar `PATCH /api/loans/:id/installments/:n/pay`
 - **Lógica:**
@@ -368,56 +372,53 @@
 
 ---
 
-### T-029 — Controller: cambiar estado manual
+### T-029 — Controller: cambiar estado manual ✅ DONE [2026-05-05]
 - **Agente:** `backend-builder`
 - **Qué hacer:** Implementar `PATCH /api/loans/:id/status`
 - **Done cuando:** `@qa-verifier` pasa RF-010 y RF-011
 
 ---
 
-### T-030 — Servicio `notificationService.js`
+### T-030 — Servicio `notificationService.js` ✅ DONE [2026-05-05]
 - **Agente:** `backend-builder`
 - **Qué hacer:** Implementar `generateLoanNotifications` según contrato en spec
-- **Archivos:** `/backend/src/services/notificationService.js`
+- **Archivos:** `/backend/src/services/notificationService.js`, `/backend/src/models/Notification.js`, `/backend/migrations/20260505000004-create-notifications.js`
 - **Nota:** Necesita una tabla `Notifications` en la BD. Crear modelo y migración.
 - **Campos del modelo Notification:** `id`, `lenderId`, `loanId`, `message`, `scheduledFor`, `isRead`, `type`, `createdAt`
 - **Done cuando:** `@qa-verifier` pasa criterios RF-012 y RF-013
 
 ---
 
-### T-031 — Endpoints de notificaciones
+### T-031 — Endpoints de notificaciones ✅ DONE [2026-05-05]
 - **Agente:** `backend-builder`
 - **Qué hacer:** Implementar `GET /api/notifications` y `PATCH /api/notifications/:id/read`
+- **Archivos:** `/backend/src/controllers/notificationController.js`, `/backend/src/routes/notifications.js`
 - **Lógica del GET:** `WHERE lenderId = req.user.id AND scheduledFor <= NOW() AND isRead = false`
 - **Done cuando:** El bell del frontend puede consumir este endpoint
 
 ---
 
-### T-032 — Endpoints de reportes
+### T-032 — Endpoints de reportes ✅ DONE [2026-05-05]
 - **Agente:** `backend-builder`
 - **Qué hacer:** Implementar `GET /api/reports/portfolio` y `GET /api/reports/borrower/:id`
-- **Archivos:** `/backend/src/controllers/reportController.js`
-- **Para CSV:** usar `json2csv` o construir el string manualmente
+- **Archivos:** `/backend/src/controllers/reportController.js`, `/backend/src/routes/reports.js`
+- **Para CSV:** construir el string manualmente
 - **Para XLSX:** usar `exceljs` (`npm install exceljs`)
-- **Headers de respuesta:**
-  ```js
-  res.setHeader('Content-Disposition', 'attachment; filename="portfolio.csv"');
-  res.setHeader('Content-Type', 'text/csv');
-  ```
 - **Done cuando:** `@qa-verifier` pasa RF-014 y RF-015
 
 ---
 
 ## FASE 5 — Frontend: Base
 
-### T-033 — Configurar Tailwind CSS
+### T-033 — Configurar Tailwind CSS ✅ DONE [2026-05-05]
 - **Agente:** `frontend-builder`
-- **Qué hacer:** Configurar `tailwind.config.js` para que escanee `./src/**/*.{js,jsx}`, agregar directivas a `index.css`
+- **Qué hacer:** Configurar Tailwind v4 con plugin Vite, agregar directivas a `index.css`
 - **Done cuando:** Una clase como `bg-blue-500` en un componente aplica el estilo
+- **Configuración:** Tailwind v4 usa `@import "tailwindcss"` (no requiere tailwind.config.js)
 
 ---
 
-### T-034 — Configurar Axios + interceptors
+### T-034 — Configurar Axios + interceptors ✅ DONE [2026-05-05]
 - **Agente:** `frontend-builder`
 - **Qué hacer:** Crear `src/services/api.js` — instancia de Axios con baseURL del env, interceptor de request que agrega JWT header, interceptor de response que maneja 401 (logout automático)
 - **Archivos:** `/frontend/src/services/api.js`
@@ -426,16 +427,16 @@
 
 ---
 
-### T-035 — Router y rutas protegidas
+### T-035 — Router y rutas protegidas ✅ DONE [2026-05-05]
 - **Agente:** `frontend-builder`
-- **Qué hacer:** Crear `AppRouter.jsx` con todas las rutas de la spec 6.5, implementar `PrivateRoute` que verifica `authStore.isAuthenticated`
+- **Qué hacer:** Crear `AppRouter.jsx` con todas las rutas de la spec 6.5, implementar `PrivateRoute` que verifica token en sessionStorage
 - **Rutas públicas:** `/login`, `/register`
-- **Rutas protegidas:** todo lo demás
+- **Rutas protegidas:** `/dashboard`, `/borrowers`, `/borrowers/:id`, `/loans`, `/loans/:id`, `/reports`
 - **Done cuando:** Navegar a `/dashboard` sin estar autenticado redirige a `/login`
 
 ---
 
-### T-036 — authStore (Zustand)
+### T-036 — authStore (Zustand) ✅ DONE [2026-05-05]
 - **Agente:** `frontend-builder`
 - **Qué hacer:** Implementar store según contrato en spec (Reglas de Estado Global)
 - **Archivos:** `/frontend/src/stores/authStore.js`
@@ -444,7 +445,7 @@
 
 ---
 
-### T-037 — Páginas de Login y Register
+### T-037 — Páginas de Login y Register ✅ DONE [2026-05-05]
 - **Agente:** `frontend-builder`
 - **Qué hacer:** Implementar formularios con validación Zod, mostrar errores inline, llamar al authStore
 - **Done cuando:** Un usuario puede registrarse, es redirigido al dashboard, puede cerrar sesión y volver al login
@@ -453,101 +454,111 @@
 
 ## FASE 6 — Frontend: Borrowers
 
-### T-038 — borrowerStore
+### T-038 — borrowerStore ✅ DONE [2026-05-05]
 - **Agente:** `frontend-builder`
 - **Archivos:** `/frontend/src/stores/borrowerStore.js`
 - **Done cuando:** `fetchBorrowers`, `createBorrower`, `updateBorrower`, `deleteBorrower` funcionan sin errores
 
 ---
 
-### T-039 — Página BorrowersList
+### T-039 — Página BorrowersList ✅ DONE [2026-05-05]
 - **Agente:** `frontend-builder`
 - **Qué hacer:** Tabla de prestatarios con búsqueda simple, botón de crear, acciones de editar/eliminar
+- **Archivos:** `/frontend/src/pages/BorrowersList.jsx`
 - **Done cuando:** RF-003, RF-004, RF-005 verificables desde la UI
 
 ---
 
-### T-040 — Modal BorrowerForm
+### T-040 — Modal BorrowerForm ✅ DONE [2026-05-05]
 - **Agente:** `frontend-builder`
 - **Qué hacer:** Formulario reutilizable para crear y editar prestatario, con validación Zod
+- **Archivos:** `/frontend/src/components/borrower/BorrowerFormModal.jsx`
 - **Done cuando:** Los errores de validación aparecen debajo del campo correspondiente antes de enviar
 
 ---
 
 ## FASE 7 — Frontend: Préstamos
 
-### T-041 — loanStore
+### T-041 — loanStore ✅ DONE [2026-05-05]
 - **Agente:** `frontend-builder`
 - **Archivos:** `/frontend/src/stores/loanStore.js`
 - **Done cuando:** Todas las acciones del contrato en spec funcionan
 
 ---
 
-### T-042 — loanCalculator (cliente)
+### T-042 — loanCalculator (cliente) ✅ DONE [2026-05-05]
 - **Agente:** `frontend-builder`
 - **Qué hacer:** Copiar la lógica de cálculo del servidor al cliente (mismo algoritmo). Usado SOLO para preview antes de confirmar el préstamo.
 - **Archivos:** `/frontend/src/utils/loanCalculator.js`
+- **Dependencia agregada:** `date-fns`
 - **Aprender:** DRY vs. pragmatismo. Lo ideal sería un solo lugar con esta lógica. Lo práctico para v1.0 es duplicarla en cliente y servidor. En una versión futura, esto podría extraerse a un paquete compartido.
 
 ---
 
-### T-043 — Modal CreateLoan
+### T-043 — Modal CreateLoan ✅ DONE [2026-05-05]
 - **Agente:** `frontend-builder`
 - **Qué hacer:** Formulario de creación de préstamo con preview del schedule
+- **Archivos:** `/frontend/src/components/loan/CreateLoanModal.jsx`
 - **Comportamiento clave:** El preview se recalcula con debounce de 300ms cuando cambian los inputs — NO en cada render
 - **Done cuando:** El usuario ve el schedule antes de confirmar, y al confirmar el schedule del servidor coincide con el preview
 
 ---
 
-### T-044 — Página LoanDetails
+### T-044 — Página LoanDetails ✅ DONE [2026-05-05]
 - **Agente:** `frontend-builder`
 - **Qué hacer:** Header del préstamo + `PaymentHistoryTable` con acción de marcar cuotas
+- **Archivos:** `/frontend/src/pages/LoanDetails.jsx`, `/frontend/src/components/loan/PaymentHistoryTable.jsx`
 - **Done cuando:** RF-008 y RF-009 verificables desde la UI
 
 ---
 
-### T-045 — Cambio de estado manual
+### T-045 — Cambio de estado manual ✅ DONE [2026-05-05]
 - **Agente:** `frontend-builder`
 - **Qué hacer:** Selector de estado en la página de detalles del préstamo
+- **Implementado en:** T-044 (LoanDetails.jsx con modal de cambio de estado)
 - **Done cuando:** RF-010 y RF-011 verificables desde la UI
 
 ---
 
 ## FASE 8 — Frontend: Notificaciones y Reportes
 
-### T-046 — notificationStore + NotificationBell
+### T-046 — notificationStore + NotificationBell ✅ DONE [2026-05-05]
 - **Agente:** `frontend-builder`
 - **Qué hacer:** Store + componente bell con badge + panel desplegable
+- **Archivos:** `/frontend/src/stores/notificationStore.js`, `/frontend/src/components/notifications/NotificationBell.jsx`, `/frontend/src/components/notifications/NotificationPanel.jsx`
 - **Done cuando:** RF-012 y RF-013 visibles como notificaciones en el panel
 
 ---
 
-### T-047 — exportService + página Reports
+### T-047 — exportService + página Reports ✅ DONE [2026-05-05]
 - **Agente:** `frontend-builder`
 - **Qué hacer:** Botones de descarga que llaman a los endpoints de reporte del backend
+- **Archivos:** `/frontend/src/services/exportService.js`, `/frontend/src/pages/Reports.jsx`
 - **Done cuando:** RF-014 y RF-015 funcionan — se descarga el archivo
 
 ---
 
 ## FASE 9 — Dashboard e integración
 
-### T-048 — Dashboard
+### T-048 — Dashboard ✅ DONE [2026-05-05]
 - **Agente:** `frontend-builder`
-- **Qué hacer:** KPIs (total prestado, total en mora, total cobrado), tabla de prestatarios activos, sección "cobros de hoy"
+- **Qué hacer:** KPIs (total prestado, total en mora, total cobrado), tabla de prestatarios activos, sección "préstamos activos"
+- **Archivos:** `/frontend/src/pages/Dashboard.jsx`
 - **KPIs se calculan en el frontend** a partir de los datos ya cargados en los stores — no hay endpoints especiales para ellos
 
 ---
 
-### T-049 — BorrowerProfile
+### T-049 — BorrowerProfile ✅ DONE [2026-05-05]
 - **Agente:** `frontend-builder`
 - **Qué hacer:** Página con información del prestatario + lista de sus préstamos con estado
+- **Archivos:** `/frontend/src/pages/BorrowerProfile.jsx`, backend actualizado con GET /borrowers/:id
 - **Done cuando:** Navegando desde la lista de prestatarios se llega al perfil correctamente
 
 ---
 
 ## FASE 10 — QA Final
 
-### T-050 — Checklist completo de RF
+### T-050 — Checklist completo de RF ✅ DONE [2026-05-05]
 - **Agente:** `qa-verifier`
 - **Qué hacer:** Recorrer la tabla de Criterios de Aceptación en `spec.md` y verificar cada uno
 - **Artefacto:** `/qa/rf-checklist.md` con `[PASS]` o `[FAIL]` por cada criterio
@@ -555,12 +566,13 @@
 
 ---
 
-### T-051 — Verificar invariantes matemáticos
+### T-051 — Verificar invariantes matemáticos ✅ DONE [2026-05-05]
 - **Agente:** `qa-verifier`
 - **Qué hacer:** Para cada esquema, crear un préstamo y verificar:
   - `sum(principalAmount)` === `principalLoan`
   - `sum(interestAmount)` === 0 para NO_INTEREST
   - Cada `dueDate` es exactamente un mes después del anterior
+- **Artefacto:** `/qa/calc-invariants.js` con verificación automatizada
 - **Done cuando:** Los 3 invariantes pasan para los 3 esquemas con al menos 2 valores de input distintos
 
 ---
