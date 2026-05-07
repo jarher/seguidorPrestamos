@@ -24,7 +24,7 @@ const Dashboard = () => {
   }
 
   const totalPrestado = loans.reduce((sum, loan) => sum + parseFloat(loan.principalLoan), 0);
-  
+
   const totalEnMora = loans
     .filter(loan => loan.status === 'DEFAULTED')
     .reduce((sum, loan) => sum + parseFloat(loan.principalLoan), 0);
@@ -38,9 +38,9 @@ const Dashboard = () => {
 
   const today = new Date();
   const todayLoans = [];
-  
+
   const todayDateStr = format(today, 'yyyy-MM-dd');
-  const todayLoansFromStore = loans.filter(l => 
+  const todayLoansFromStore = loans.filter(l =>
     l.startDate && l.startDate <= todayDateStr && l.status === 'ACTIVE'
   ).slice(0, 3);
 
@@ -132,11 +132,10 @@ const Dashboard = () => {
                   </td>
                   <td className="px-4 py-2 text-right">{formatCurrency(parseFloat(loan.principalLoan))}</td>
                   <td className="px-4 py-2 text-center">
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      loan.status === 'ACTIVE' ? 'bg-blue-100 text-blue-800' :
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${loan.status === 'ACTIVE' ? 'bg-blue-100 text-blue-800' :
                       loan.status === 'DEFAULTED' ? 'bg-red-100 text-red-800' :
-                      'bg-green-100 text-green-800'
-                    }`}>
+                        'bg-green-100 text-green-800'
+                      }`}>
                       {loan.status === 'ACTIVE' ? 'Activo' : loan.status === 'DEFAULTED' ? 'Mora' : 'Pagado'}
                     </span>
                   </td>
