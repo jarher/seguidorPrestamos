@@ -7,6 +7,7 @@ export const routes = {
   loans: '/loans',
   loanDetails: '/loans/:id',
   reports: '/reports',
+  settings: '/settings',
 };
 
 export const publicRoutes = [routes.login, routes.register];
