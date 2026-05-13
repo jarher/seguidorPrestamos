@@ -15,6 +15,23 @@
   --success: #4edea3;
   --warning: #ffb95f;
   --error: #ffb4ab;
+  --outline: rgba(73, 69, 79, 0.15);
+}
+
+.theme-light {
+  --surface: #f8fafc;
+  --surface-container-low: #f1f5f9;
+  --surface-container: #e2e8f0;
+  --surface-container-high: #cbd5e1;
+  --surface-container-highest: #94a3b8;
+  --on-surface: #0f172a;
+  --on-surface-variant: #475569;
+  --primary: #2563eb;
+  --primary-container: #3b82f6;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  --outline: rgba(15, 23, 42, 0.15);
 }
 
 @layer base {

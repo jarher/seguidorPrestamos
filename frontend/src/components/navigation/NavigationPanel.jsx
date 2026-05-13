@@ -1,8 +1,9 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Home, FileText, Users, BarChart3, Settings, LogOut, X, DollarSign } from 'lucide-react';
+import { Home, FileText, Users, BarChart3, Settings, LogOut, X, DollarSign, Sun, Moon } from 'lucide-react';
 import { routes } from '../../router/routes';
 import { useSidebar } from '../../context/SidebarContext';
 import useAuthStore from '../../stores/authStore';
+import useThemeStore from '../../stores/themeStore';
 
 const navItems = [
   { icon: Home, label: 'Dashboard', path: routes.dashboard },
@@ -16,6 +17,7 @@ const NavigationPanel = () => {
   const navigate = useNavigate();
   const { logout } = useAuthStore();
   const { isOpen, closeSidebar } = useSidebar();
+  const { theme, toggleTheme } = useThemeStore();
 
   const handleLogout = () => {
     logout();
@@ -25,7 +27,7 @@ const NavigationPanel = () => {
   return (
     <>
       {isOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/60 z-40 lg:hidden"
           onClick={closeSidebar}
           style={{ animation: 'fadeIn 0.2s ease-out' }}
@@ -33,16 +35,16 @@ const NavigationPanel = () => {
       )}
 
       <aside className={`
-        fixed lg:static inset-y-0 left-0 z-50
-        w-64 bg-surface-container h-full
+        fixed lg:sticky lg:top-0 inset-y-0 left-0 z-50
+        w-64 bg-surface-container h-screen max-h-screen overflow-y-auto
         transform transition-transform duration-300 ease-out
         ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         flex flex-col
       `}>
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col flex-1 h-full">
           <div className="p-6 border-b border-outline flex items-center justify-between lg:justify-start">
-            <Link 
-              to={routes.dashboard} 
+            <Link
+              to={routes.dashboard}
               className="flex items-center gap-3"
               onClick={closeSidebar}
             >
@@ -51,7 +53,7 @@ const NavigationPanel = () => {
               </div>
               <span className="text-xl font-bold text-on-surface tracking-tight">Lender's HQ</span>
             </Link>
-            
+
             <button
               onClick={closeSidebar}
               className="p-2 rounded-lg hover:bg-surface-container-high lg:hidden transition-colors"
@@ -64,9 +66,9 @@ const NavigationPanel = () => {
             <p className="text-label-sm text-on-surface-variant px-4 mb-3">Menú Principal</p>
             {navItems.map((item) => {
               const Icon = item.icon;
-              const isActive = location.pathname === item.path || 
+              const isActive = location.pathname === item.path ||
                 (item.path !== routes.dashboard && location.pathname.startsWith(item.path));
-              
+
               return (
                 <Link
                   key={item.path}
@@ -74,8 +76,8 @@ const NavigationPanel = () => {
                   onClick={closeSidebar}
                   className={`
                     flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200
-                    ${isActive 
-                      ? 'bg-primary/15 text-primary font-medium' 
+                    ${isActive
+                      ? 'bg-primary/15 text-primary font-medium'
                       : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high'
                     }
                   `}
@@ -88,6 +90,13 @@ const NavigationPanel = () => {
           </nav>
 
           <div className="p-4 border-t border-outline space-y-1">
+            <button
+              onClick={toggleTheme}
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors"
+            >
+              {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+              <span>{theme === 'dark' ? 'Modo Claro' : 'Modo Oscuro'}</span>
+            </button>
             <Link
               to={routes.settings}
               onClick={closeSidebar}
@@ -96,7 +105,7 @@ const NavigationPanel = () => {
               <Settings className="w-5 h-5" />
               <span>Configuración</span>
             </Link>
-            
+
             <button
               onClick={handleLogout}
               className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-error hover:bg-error/10 transition-colors"

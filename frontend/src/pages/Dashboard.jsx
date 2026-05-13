@@ -249,7 +249,6 @@ const Dashboard = () => {
         className="flex items-center w-12 h-12 ml-auto rounded-full justify-center bg-primary text-surface font-medium hover:bg-primary/90 transition-colors"
       >
         <Plus className="w-4 h-4" />
-        <span className="hidden md:inline">Nuevo Préstamo</span>
       </Link>
     </div>
   );

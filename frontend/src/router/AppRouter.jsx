@@ -16,15 +16,17 @@ import Reports from '../pages/Reports.jsx';
 
 import NavigationPanel from '../components/navigation/NavigationPanel';
 import MobileNav from '../components/navigation/MobileNav';
+import useThemeStore from '../stores/themeStore';
 import '../App.css';
 
 const AppLayout = () => {
+  const theme = useThemeStore((state) => state.theme);
   return (
     <SidebarProvider>
       <div className="app-layout">
         <NavigationPanel />
         <MobileNav />
-        <main className="main-content">
+        <main className={`main-content ${theme === 'light' ? 'theme-light' : ''}`}>
           <Outlet />
         </main>
       </div>

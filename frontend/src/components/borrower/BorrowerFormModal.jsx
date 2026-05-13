@@ -44,58 +44,58 @@ const BorrowerFormModal = ({ borrower, onClose, onSuccess }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <ToastContainer position="top-right" />
-      <div className="bg-white rounded-lg p-6 w-full max-w-md">
-        <h2 className="text-xl font-bold mb-4">
+      <div className="bg-surface-container rounded-lg p-6 w-full max-w-md">
+        <h2 className="text-xl font-bold mb-4 text-on-surface">
           {borrower ? 'Editar Prestatario' : 'Nuevo Prestatario'}
         </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Nombre *</label>
+            <label className="block text-sm font-medium text-on-surface-variant">Nombre *</label>
             <input
               type="text"
               name="borrowerFirstName"
               defaultValue={borrower?.borrowerFirstName}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              className="mt-1 block w-full px-3 py-2 border border-outline bg-surface-container-low text-on-surface rounded-md focus:outline-none focus:ring-2 focus:ring-primary placeholder-on-surface-variant"
             />
-            {errors.borrowerFirstName && <p className="text-red-500 text-sm mt-1">{errors.borrowerFirstName}</p>}
+            {errors.borrowerFirstName && <p className="text-error text-sm mt-1">{errors.borrowerFirstName}</p>}
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Apellido</label>
+            <label className="block text-sm font-medium text-on-surface-variant">Apellido</label>
             <input
               type="text"
               name="borrowerLastName"
               defaultValue={borrower?.borrowerLastName || ''}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              className="mt-1 block w-full px-3 py-2 border border-outline bg-surface-container-low text-on-surface rounded-md focus:outline-none focus:ring-2 focus:ring-primary placeholder-on-surface-variant"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Email</label>
+            <label className="block text-sm font-medium text-on-surface-variant">Email</label>
             <input
               type="email"
               name="borrowerEmail"
               defaultValue={borrower?.borrowerEmail || ''}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              className="mt-1 block w-full px-3 py-2 border border-outline bg-surface-container-low text-on-surface rounded-md focus:outline-none focus:ring-2 focus:ring-primary placeholder-on-surface-variant"
             />
-            {errors.borrowerEmail && <p className="text-red-500 text-sm mt-1">{errors.borrowerEmail}</p>}
+            {errors.borrowerEmail && <p className="text-error text-sm mt-1">{errors.borrowerEmail}</p>}
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Teléfono</label>
+            <label className="block text-sm font-medium text-on-surface-variant">Teléfono</label>
             <input
               type="tel"
               name="borrowerPhone"
               defaultValue={borrower?.borrowerPhone || ''}
               placeholder="+573001234567"
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              className="mt-1 block w-full px-3 py-2 border border-outline bg-surface-container-low text-on-surface rounded-md focus:outline-none focus:ring-2 focus:ring-primary placeholder-on-surface-variant"
             />
-            {errors.borrowerPhone && <p className="text-red-500 text-sm mt-1">{errors.borrowerPhone}</p>}
+            {errors.borrowerPhone && <p className="text-error text-sm mt-1">{errors.borrowerPhone}</p>}
           </div>
           <div className="flex justify-end space-x-3 pt-4">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+              className="px-4 py-2 border border-outline rounded-md text-on-surface-variant hover:bg-surface-container-high transition-colors"
             >
               Cancelar
             </button>

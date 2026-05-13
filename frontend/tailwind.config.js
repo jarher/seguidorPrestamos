@@ -4,21 +4,24 @@ export default {
     extend: {
       colors: {
         surface: {
-          DEFAULT: '#11121e',
+          DEFAULT: 'var(--surface)',
           container: {
-            low: '#1a1b27',
-            DEFAULT: '#1e1f2b',
-            high: '#252633',
-            highest: '#333441'
+            low: 'var(--surface-container-low)',
+            DEFAULT: 'var(--surface-container)',
+            high: 'var(--surface-container-high)',
+            highest: 'var(--surface-container-highest)'
           }
         },
-        'on-surface': '#e3e2e7',
-        'on-surface-variant': '#9ca3af',
-        primary: { DEFAULT: '#adc6ff', container: '#4d8eff' },
-        success: '#4edea3',
-        warning: '#ffb95f',
-        error: '#ffb4ab',
-        outline: 'rgba(73, 69, 79, 0.15)'
+        'on-surface': 'var(--on-surface)',
+        'on-surface-variant': 'var(--on-surface-variant)',
+        primary: { 
+          DEFAULT: 'var(--primary)', 
+          container: 'var(--primary-container)' 
+        },
+        success: 'var(--success)',
+        warning: 'var(--warning)',
+        error: 'var(--error)',
+        outline: 'var(--outline)'
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif']

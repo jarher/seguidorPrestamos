@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, FileText, Users, BarChart3, Settings, Menu } from 'lucide-react';
+import { Home, FileText, Users, BarChart3, Settings, Menu, Sun, Moon } from 'lucide-react';
+import useThemeStore from '../../stores/themeStore';
 import { routes } from '../../router/routes';
 import { useSidebar } from '../../context/SidebarContext';
 
@@ -14,21 +15,32 @@ const navItems = [
 const MobileNav = () => {
   const location = useLocation();
   const { toggleSidebar } = useSidebar();
+  const { theme, toggleTheme } = useThemeStore();
 
   return (
     <div className="lg:hidden">
-      <header className="fixed top-0 left-0 right-0 h-14 z-40 flex items-center px-4 border-outline bg-surface-container">
-        <button
-          onClick={toggleSidebar}
-          className="p-2 rounded-lg hover-high transition-colors"
-          aria-label="Abrir menú"
-        >
-          <Menu className="w-6 h-6 text-on-surface" />
-        </button>
+      <header className="fixed top-0 left-0 right-0 h-14 z-40 flex items-center justify-between px-4 border-outline bg-surface-container">
+        <div className="flex items-center">
+          <button
+            onClick={toggleSidebar}
+            className="p-2 rounded-lg hover-high transition-colors"
+            aria-label="Abrir menú"
+          >
+            <Menu className="w-6 h-6 text-on-surface" />
+          </button>
+  
+          <Link to={routes.dashboard} className="ml-3 flex items-center gap-2">
+            <span className="text-lg font-bold text-primary tracking-tight">Lender's HQ</span>
+          </Link>
+        </div>
 
-        <Link to={routes.dashboard} className="ml-3 flex items-center gap-2">
-          <span className="text-lg font-bold text-primary tracking-tight">Lender's HQ</span>
-        </Link>
+        <button
+          onClick={toggleTheme}
+          className="p-2 rounded-lg text-on-surface hover:bg-surface-container-high transition-colors"
+          aria-label="Cambiar tema"
+        >
+          {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+        </button>
       </header>
 
       <nav className="fixed bottom-0 left-0 right-0 h-16 z-30 border-outline safe-area-pb bg-surface-container">

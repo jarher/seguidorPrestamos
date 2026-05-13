@@ -97,19 +97,19 @@ const CreateLoanModal = ({ onClose, onSuccess }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 overflow-auto">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-auto">
       <ToastContainer position="top-right" />
-      <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto m-4">
-        <h2 className="text-xl font-bold mb-4">Nuevo Préstamo</h2>
+      <div className="bg-surface-container rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto m-4">
+        <h2 className="text-xl font-bold mb-4 text-on-surface">Nuevo Préstamo</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">Prestatario *</label>
+              <label className="block text-sm font-medium text-on-surface-variant">Prestatario *</label>
               <select
                 name="borrowerId"
                 value={formData.borrowerId}
                 onChange={handleChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                className="mt-1 block w-full px-3 py-2 border border-outline bg-surface-container-low text-on-surface rounded-md focus:outline-none focus:ring-2 focus:ring-primary placeholder-on-surface-variant"
               >
                 <option value="">Seleccionar...</option>
                 {borrowers.map((b) => (
@@ -118,23 +118,23 @@ const CreateLoanModal = ({ onClose, onSuccess }) => {
                   </option>
                 ))}
               </select>
-              {errors.borrowerId && <p className="text-red-500 text-sm mt-1">{errors.borrowerId}</p>}
+              {errors.borrowerId && <p className="text-error text-sm mt-1">{errors.borrowerId}</p>}
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Monto *</label>
+              <label className="block text-sm font-medium text-on-surface-variant">Monto *</label>
               <input
                 type="number"
                 name="principalLoan"
                 value={formData.principalLoan}
                 onChange={handleChange}
                 step="0.01"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                className="mt-1 block w-full px-3 py-2 border border-outline bg-surface-container-low text-on-surface rounded-md focus:outline-none focus:ring-2 focus:ring-primary placeholder-on-surface-variant"
                 placeholder="1000000"
               />
-              {errors.principalLoan && <p className="text-red-500 text-sm mt-1">{errors.principalLoan}</p>}
+              {errors.principalLoan && <p className="text-error text-sm mt-1">{errors.principalLoan}</p>}
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Tasa Mensual *</label>
+              <label className="block text-sm font-medium text-on-surface-variant">Tasa Mensual *</label>
               <input
                 type="number"
                 name="monthlyRate"
@@ -143,18 +143,18 @@ const CreateLoanModal = ({ onClose, onSuccess }) => {
                 step="0.0001"
                 min="0"
                 max="1"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                className="mt-1 block w-full px-3 py-2 border border-outline bg-surface-container-low text-on-surface rounded-md focus:outline-none focus:ring-2 focus:ring-primary placeholder-on-surface-variant"
                 placeholder="0.02"
               />
-              {errors.monthlyRate && <p className="text-red-500 text-sm mt-1">{errors.monthlyRate}</p>}
+              {errors.monthlyRate && <p className="text-error text-sm mt-1">{errors.monthlyRate}</p>}
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Esquema *</label>
+              <label className="block text-sm font-medium text-on-surface-variant">Esquema *</label>
               <select
                 name="loanScheme"
                 value={formData.loanScheme}
                 onChange={handleChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                className="mt-1 block w-full px-3 py-2 border border-outline bg-surface-container-low text-on-surface rounded-md focus:outline-none focus:ring-2 focus:ring-primary placeholder-on-surface-variant"
               >
                 <option value="FIXED_INSTALLMENT">Cuota Fija</option>
                 <option value="DECREASING_INSTALLMENT">Cuota Decreciente</option>
@@ -162,63 +162,63 @@ const CreateLoanModal = ({ onClose, onSuccess }) => {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Meses *</label>
+              <label className="block text-sm font-medium text-on-surface-variant">Meses *</label>
               <input
                 type="number"
                 name="totalMonths"
                 value={formData.totalMonths}
                 onChange={handleChange}
                 min="1"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                className="mt-1 block w-full px-3 py-2 border border-outline bg-surface-container-low text-on-surface rounded-md focus:outline-none focus:ring-2 focus:ring-primary placeholder-on-surface-variant"
                 placeholder="12"
               />
-              {errors.totalMonths && <p className="text-red-500 text-sm mt-1">{errors.totalMonths}</p>}
+              {errors.totalMonths && <p className="text-error text-sm mt-1">{errors.totalMonths}</p>}
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Fecha Inicio *</label>
+              <label className="block text-sm font-medium text-on-surface-variant">Fecha Inicio *</label>
               <input
                 type="date"
                 name="startDate"
                 value={formData.startDate}
                 onChange={handleChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                className="mt-1 block w-full px-3 py-2 border border-outline bg-surface-container-low text-on-surface rounded-md focus:outline-none focus:ring-2 focus:ring-primary placeholder-on-surface-variant"
               />
-              {errors.startDate && <p className="text-red-500 text-sm mt-1">{errors.startDate}</p>}
+              {errors.startDate && <p className="text-error text-sm mt-1">{errors.startDate}</p>}
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Fecha Vencimiento</label>
+              <label className="block text-sm font-medium text-on-surface-variant">Fecha Vencimiento</label>
               <input
                 type="date"
                 name="maturityDate"
                 value={formData.maturityDate}
                 onChange={handleChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                className="mt-1 block w-full px-3 py-2 border border-outline bg-surface-container-low text-on-surface rounded-md focus:outline-none focus:ring-2 focus:ring-primary placeholder-on-surface-variant"
               />
             </div>
           </div>
 
           {preview.length > 0 && (
             <div className="mt-6">
-              <h3 className="font-semibold mb-2">Vista Previa del Schedule</h3>
-              <div className="max-h-60 overflow-y-auto border rounded-lg">
+              <h3 className="font-semibold mb-2 text-on-surface">Vista Previa del Schedule</h3>
+              <div className="max-h-60 overflow-y-auto border border-outline rounded-lg">
                 <table className="min-w-full">
-                  <thead className="bg-gray-50 sticky top-0">
+                  <thead className="bg-surface-container-low sticky top-0">
                     <tr>
-                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500">#</th>
-                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500">Fecha</th>
-                      <th className="px-3 py-2 text-right text-xs font-medium text-gray-500">Capital</th>
-                      <th className="px-3 py-2 text-right text-xs font-medium text-gray-500">Interés</th>
-                      <th className="px-3 py-2 text-right text-xs font-medium text-gray-500">Total</th>
+                      <th className="px-3 py-2 text-left text-xs font-medium text-on-surface-variant">#</th>
+                      <th className="px-3 py-2 text-left text-xs font-medium text-on-surface-variant">Fecha</th>
+                      <th className="px-3 py-2 text-right text-xs font-medium text-on-surface-variant">Capital</th>
+                      <th className="px-3 py-2 text-right text-xs font-medium text-on-surface-variant">Interés</th>
+                      <th className="px-3 py-2 text-right text-xs font-medium text-on-surface-variant">Total</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-200">
+                  <tbody className="divide-y divide-outline">
                     {preview.map((inst) => (
                       <tr key={inst.installmentNumber}>
-                        <td className="px-3 py-2 text-sm">{inst.installmentNumber}</td>
-                        <td className="px-3 py-2 text-sm">{formatDate(inst.dueDate)}</td>
-                        <td className="px-3 py-2 text-sm text-right">{formatCurrency(inst.principalAmount)}</td>
-                        <td className="px-3 py-2 text-sm text-right">{formatCurrency(inst.interestAmount)}</td>
-                        <td className="px-3 py-2 text-sm text-right font-medium">{formatCurrency(inst.totalAmount)}</td>
+                        <td className="px-3 py-2 text-sm text-on-surface">{inst.installmentNumber}</td>
+                        <td className="px-3 py-2 text-sm text-on-surface">{formatDate(inst.dueDate)}</td>
+                        <td className="px-3 py-2 text-sm text-on-surface text-right">{formatCurrency(inst.principalAmount)}</td>
+                        <td className="px-3 py-2 text-sm text-on-surface text-right">{formatCurrency(inst.interestAmount)}</td>
+                        <td className="px-3 py-2 text-sm text-on-surface text-right font-medium">{formatCurrency(inst.totalAmount)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -231,7 +231,7 @@ const CreateLoanModal = ({ onClose, onSuccess }) => {
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+              className="px-4 py-2 border border-outline rounded-md text-on-surface-variant hover:bg-surface-container-high transition-colors"
             >
               Cancelar
             </button>
