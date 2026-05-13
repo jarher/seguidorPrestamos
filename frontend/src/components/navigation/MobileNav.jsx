@@ -16,36 +16,36 @@ const MobileNav = () => {
   const { toggleSidebar } = useSidebar();
 
   return (
-    <>
-      <header className="fixed top-0 left-0 right-0 h-14 bg-surface-container z-40 flex items-center px-4 lg:hidden border-b border-outline">
+    <div className="lg:hidden">
+      <header className="fixed top-0 left-0 right-0 h-14 z-40 flex items-center px-4 border-outline bg-surface-container">
         <button
           onClick={toggleSidebar}
-          className="p-2 rounded-lg hover:bg-surface-container-high transition-colors"
+          className="p-2 rounded-lg hover-high transition-colors"
           aria-label="Abrir menú"
         >
           <Menu className="w-6 h-6 text-on-surface" />
         </button>
-        
+
         <Link to={routes.dashboard} className="ml-3 flex items-center gap-2">
           <span className="text-lg font-bold text-primary tracking-tight">Lender's HQ</span>
         </Link>
       </header>
 
-      <nav className="fixed bottom-0 left-0 right-0 h-16 bg-surface-container z-30 lg:hidden border-t border-outline safe-area-pb">
+      <nav className="fixed bottom-0 left-0 right-0 h-16 z-30 border-outline safe-area-pb bg-surface-container">
         <div className="flex items-center justify-around h-full px-2">
           {navItems.slice(0, 4).map((item) => {
             const Icon = item.icon;
-            const isActive = location.pathname === item.path || 
+            const isActive = location.pathname === item.path ||
               (item.path !== routes.dashboard && location.pathname.startsWith(item.path));
-            
+
             return (
               <Link
                 key={item.path}
                 to={item.path}
                 className={`
                   flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg transition-colors min-w-[60px]
-                  ${isActive 
-                    ? 'text-primary' 
+                  ${isActive
+                    ? 'text-primary'
                     : 'text-on-surface-variant hover:text-on-surface'
                   }
                 `}
@@ -57,7 +57,7 @@ const MobileNav = () => {
           })}
         </div>
       </nav>
-    </>
+    </div>
   );
 };
 

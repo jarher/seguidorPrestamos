@@ -51,7 +51,7 @@ const LoanDetails = () => {
     <div className="p-6">
       <ToastContainer position="top-right" />
       <div className="mb-4">
-        <Link to={routes.loans} className="text-purple-600 hover:underline">← Volver a Préstamos</Link>
+        <Link to={routes.loans} className="text-primary hover:underline">← Volver a Préstamos</Link>
       </div>
 
       <div className="bg-white rounded-lg shadow p-6 mb-6">

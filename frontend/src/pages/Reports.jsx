@@ -37,7 +37,7 @@ const Reports = () => {
       <h1 className="text-2xl font-bold mb-6">Reportes</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-surface-container rounded-lg shadow p-6">
           <h2 className="text-lg font-semibold mb-4">Reporte de Cartera</h2>
           <p className="text-gray-600 text-sm mb-4">
             Descarga un reporte completo de todos los préstamos en tu cartera.
@@ -46,7 +46,7 @@ const Reports = () => {
             <button
               onClick={() => handleDownloadPortfolio('csv')}
               disabled={loading}
-              className="flex-1 bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 disabled:opacity-50"
+              className="flex-1 bg-primary text-surface py-2 px-4 rounded-lg hover:bg-primary/80 disabled:opacity-50"
             >
               CSV
             </button>
@@ -60,7 +60,7 @@ const Reports = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-surface-container rounded-lg shadow p-6">
           <h2 className="text-lg font-semibold mb-4">Reportes por Prestatario</h2>
           <p className="text-gray-600 text-sm mb-4">
             Descarga el historial de préstamos de un prestatario específico.
@@ -68,7 +68,7 @@ const Reports = () => {
           <div className="space-y-3">
             <select
               id="borrowerSelect"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
               onChange={(e) => {
                 if (e.target.value) fetchBorrowers();
               }}
@@ -76,11 +76,11 @@ const Reports = () => {
               <option value="">Seleccionar prestatario...</option>
               <option value="load">Cargar prestatarios...</option>
             </select>
-            
+
             {borrowers.length > 0 && (
               <select
                 id="borrowerId"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
               >
                 <option value="">Seleccionar prestatario...</option>
                 {borrowers.map((b) => (
@@ -90,7 +90,7 @@ const Reports = () => {
                 ))}
               </select>
             )}
-            
+
             <div className="flex gap-2">
               <button
                 onClick={() => {
@@ -98,7 +98,7 @@ const Reports = () => {
                   if (select?.value) handleDownloadBorrower(select.value, 'csv');
                 }}
                 disabled={loading || borrowers.length === 0}
-                className="flex-1 bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 disabled:opacity-50"
+                className="flex-1 bg-primary text-surface py-2 px-4 rounded-lg hover:bg-primary/80 disabled:opacity-50"
               >
                 CSV
               </button>

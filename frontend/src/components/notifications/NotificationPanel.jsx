@@ -14,7 +14,7 @@ const NotificationPanel = ({ notifications, onClose }) => {
         {notifications.length > 0 && (
           <button
             onClick={markAllAsRead}
-            className="text-sm text-purple-600 hover:underline"
+            className="text-sm text-primary hover:underline"
           >
             Marcar todo leído
           </button>

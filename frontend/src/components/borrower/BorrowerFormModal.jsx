@@ -57,7 +57,7 @@ const BorrowerFormModal = ({ borrower, onClose, onSuccess }) => {
               type="text"
               name="borrowerFirstName"
               defaultValue={borrower?.borrowerFirstName}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
             />
             {errors.borrowerFirstName && <p className="text-red-500 text-sm mt-1">{errors.borrowerFirstName}</p>}
           </div>
@@ -67,7 +67,7 @@ const BorrowerFormModal = ({ borrower, onClose, onSuccess }) => {
               type="text"
               name="borrowerLastName"
               defaultValue={borrower?.borrowerLastName || ''}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
           <div>
@@ -76,7 +76,7 @@ const BorrowerFormModal = ({ borrower, onClose, onSuccess }) => {
               type="email"
               name="borrowerEmail"
               defaultValue={borrower?.borrowerEmail || ''}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
             />
             {errors.borrowerEmail && <p className="text-red-500 text-sm mt-1">{errors.borrowerEmail}</p>}
           </div>
@@ -87,7 +87,7 @@ const BorrowerFormModal = ({ borrower, onClose, onSuccess }) => {
               name="borrowerPhone"
               defaultValue={borrower?.borrowerPhone || ''}
               placeholder="+573001234567"
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
             />
             {errors.borrowerPhone && <p className="text-red-500 text-sm mt-1">{errors.borrowerPhone}</p>}
           </div>
@@ -102,7 +102,7 @@ const BorrowerFormModal = ({ borrower, onClose, onSuccess }) => {
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:opacity-50"
+              className="px-4 py-2 bg-primary text-surface rounded-md hover:bg-primary/80 disabled:opacity-50"
             >
               {loading ? 'Guardando...' : 'Guardar'}
             </button>

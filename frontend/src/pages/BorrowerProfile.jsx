@@ -45,14 +45,14 @@ const BorrowerProfile = () => {
   return (
     <div className="p-6">
       <div className="mb-4">
-        <Link to={routes.borrowers} className="text-purple-600 hover:underline">← Volver a Prestatarios</Link>
+        <Link to={routes.borrowers} className="">← Volver a Prestatarios</Link>
       </div>
 
       <div className="bg-white rounded-lg shadow p-6 mb-6">
         <h1 className="text-2xl font-bold mb-4">
           {borrower.borrowerFirstName} {borrower.borrowerLastName}
         </h1>
-        
+
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
           {borrower.borrowerEmail && (
             <div>
@@ -79,7 +79,7 @@ const BorrowerProfile = () => {
 
       <div className="bg-white rounded-lg shadow p-6">
         <h2 className="text-lg font-semibold mb-4">Historial de Préstamos</h2>
-        
+
         {loans.length === 0 ? (
           <p className="text-gray-500 text-sm">No hay préstamos registrados</p>
         ) : (
@@ -102,7 +102,7 @@ const BorrowerProfile = () => {
                     <td className="px-4 py-2 text-right font-medium">{formatCurrency(parseFloat(loan.principalLoan))}</td>
                     <td className="px-4 py-2 text-center text-sm">
                       {loan.loanScheme === 'FIXED_INSTALLMENT' ? 'Fija' :
-                       loan.loanScheme === 'DECREASING_INSTALLMENT' ? 'Decreciente' : 'Sin interés'}
+                        loan.loanScheme === 'DECREASING_INSTALLMENT' ? 'Decreciente' : 'Sin interés'}
                     </td>
                     <td className="px-4 py-2 text-center text-sm">{loan.totalMonths}</td>
                     <td className="px-4 py-2 text-center">
@@ -111,7 +111,7 @@ const BorrowerProfile = () => {
                       </span>
                     </td>
                     <td className="px-4 py-2 text-center">
-                      <Link to={routes.loanDetails.replace(':id', loan.id)} className="text-purple-600 hover:underline text-sm">
+                      <Link to={routes.loanDetails.replace(':id', loan.id)} className="text-primary hover:underline text-sm">
                         Ver详情
                       </Link>
                     </td>

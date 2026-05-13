@@ -54,7 +54,7 @@ const PaymentHistoryTable = ({ schedule, loanStatus, onMarkPaid, loading }) => {
                     <button
                       onClick={() => onMarkPaid(inst.installmentNumber)}
                       disabled={loading}
-                      className="text-sm bg-purple-600 text-white px-3 py-1 rounded hover:bg-purple-700 disabled:opacity-50"
+                      className="text-sm bg-primary text-surface px-3 py-1 rounded hover:bg-primary/80 disabled:opacity-50"
                     >
                       Marcar Pagada
                     </button>

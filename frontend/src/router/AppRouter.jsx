@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom
 import PrivateRoute from './PrivateRoute';
 import { routes } from './routes';
 import { SidebarProvider } from '../context/SidebarContext';
+import useAuthStore from '../stores/authStore';
 
 import Login from '../pages/Login.jsx';
 import Register from '../pages/Register.jsx';
@@ -40,8 +41,7 @@ const AuthLayout = () => {
 };
 
 const AppRouter = () => {
-  const token = sessionStorage.getItem('token');
-  const isAuthenticated = !!token;
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   return (
     <BrowserRouter>

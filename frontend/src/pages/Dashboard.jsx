@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
-import { 
-  DollarSign, 
-  AlertTriangle, 
-  CheckCircle, 
-  Users, 
-  TrendingUp, 
+import {
+  DollarSign,
+  AlertTriangle,
+  CheckCircle,
+  Users,
+  TrendingUp,
   Clock,
   Plus
 } from 'lucide-react';
@@ -52,7 +52,7 @@ const Dashboard = () => {
 
   const activeBorrowers = borrowers.filter(b => b.activeLoansCount > 0);
 
-  const recentLoans = [...loans].sort((a, b) => 
+  const recentLoans = [...loans].sort((a, b) =>
     new Date(b.createdAt) - new Date(a.createdAt)
   ).slice(0, 5);
 
@@ -69,13 +69,7 @@ const Dashboard = () => {
             Resumen de tu cartera de préstamos
           </p>
         </div>
-        <Link
-          to={routes.loans}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary text-surface font-medium text-sm hover:bg-primary/90 transition-colors"
-        >
-          <Plus className="w-4 h-4" />
-          <span className="hidden sm:inline">Nuevo Préstamo</span>
-        </Link>
+
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
@@ -113,13 +107,13 @@ const Dashboard = () => {
               Ver todos
             </Link>
           </div>
-          
+
           {pendingLoans.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-8 text-center">
               <TrendingUp className="w-10 h-10 text-on-surface-variant mb-3" />
               <p className="text-on-surface-variant">No hay préstamos activos</p>
-              <Link 
-                to={routes.loans} 
+              <Link
+                to={routes.loans}
                 className="text-primary text-sm mt-2 hover:underline"
               >
                 Crear el primero
@@ -162,13 +156,13 @@ const Dashboard = () => {
               Ver todos
             </Link>
           </div>
-          
+
           {activeBorrowers.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-8 text-center">
               <Users className="w-10 h-10 text-on-surface-variant mb-3" />
               <p className="text-on-surface-variant">No hay prestatarios</p>
-              <Link 
-                to={routes.borrowers} 
+              <Link
+                to={routes.borrowers}
                 className="text-primary text-sm mt-2 hover:underline"
               >
                 Agregar el primero
@@ -208,7 +202,7 @@ const Dashboard = () => {
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-title-lg text-on-surface font-medium">Actividad Reciente</h2>
         </div>
-        
+
         {recentLoans.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-8 text-center">
             <Clock className="w-10 h-10 text-on-surface-variant mb-3" />
@@ -222,10 +216,9 @@ const Dashboard = () => {
                 className="flex items-center justify-between p-3 bg-surface-container-low rounded-xl"
               >
                 <div className="flex items-center gap-3">
-                  <div className={`w-2 h-2 rounded-full ${
-                    loan.status === 'ACTIVE' ? 'bg-primary' :
+                  <div className={`w-2 h-2 rounded-full ${loan.status === 'ACTIVE' ? 'bg-primary' :
                     loan.status === 'DEFAULTED' ? 'bg-error' : 'bg-success'
-                  }`} />
+                    }`} />
                   <div>
                     <p className="text-on-surface text-sm">
                       {loan.borrowerFirstName} {loan.borrowerLastName}
@@ -239,12 +232,11 @@ const Dashboard = () => {
                   <p className="text-on-surface font-medium text-sm">
                     {formatCurrency(parseFloat(loan.principalLoan))}
                   </p>
-                  <span className={`text-label-sm ${
-                    loan.status === 'ACTIVE' ? 'text-primary' :
+                  <span className={`text-label-sm ${loan.status === 'ACTIVE' ? 'text-primary' :
                     loan.status === 'DEFAULTED' ? 'text-error' : 'text-success'
-                  }`}>
-                    {loan.status === 'ACTIVE' ? 'Activo' : 
-                     loan.status === 'DEFAULTED' ? 'En mora' : 'Pagado'}
+                    }`}>
+                    {loan.status === 'ACTIVE' ? 'Activo' :
+                      loan.status === 'DEFAULTED' ? 'En mora' : 'Pagado'}
                   </span>
                 </div>
               </div>
@@ -252,6 +244,13 @@ const Dashboard = () => {
           </div>
         )}
       </div>
+      <Link
+        to={routes.loans}
+        className="flex items-center w-12 h-12 ml-auto rounded-full justify-center bg-primary text-surface font-medium hover:bg-primary/90 transition-colors"
+      >
+        <Plus className="w-4 h-4" />
+        <span className="hidden md:inline">Nuevo Préstamo</span>
+      </Link>
     </div>
   );
 };

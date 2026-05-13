@@ -109,7 +109,7 @@ const CreateLoanModal = ({ onClose, onSuccess }) => {
                 name="borrowerId"
                 value={formData.borrowerId}
                 onChange={handleChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
               >
                 <option value="">Seleccionar...</option>
                 {borrowers.map((b) => (
@@ -128,7 +128,7 @@ const CreateLoanModal = ({ onClose, onSuccess }) => {
                 value={formData.principalLoan}
                 onChange={handleChange}
                 step="0.01"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                 placeholder="1000000"
               />
               {errors.principalLoan && <p className="text-red-500 text-sm mt-1">{errors.principalLoan}</p>}
@@ -143,7 +143,7 @@ const CreateLoanModal = ({ onClose, onSuccess }) => {
                 step="0.0001"
                 min="0"
                 max="1"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                 placeholder="0.02"
               />
               {errors.monthlyRate && <p className="text-red-500 text-sm mt-1">{errors.monthlyRate}</p>}
@@ -154,7 +154,7 @@ const CreateLoanModal = ({ onClose, onSuccess }) => {
                 name="loanScheme"
                 value={formData.loanScheme}
                 onChange={handleChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
               >
                 <option value="FIXED_INSTALLMENT">Cuota Fija</option>
                 <option value="DECREASING_INSTALLMENT">Cuota Decreciente</option>
@@ -169,7 +169,7 @@ const CreateLoanModal = ({ onClose, onSuccess }) => {
                 value={formData.totalMonths}
                 onChange={handleChange}
                 min="1"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                 placeholder="12"
               />
               {errors.totalMonths && <p className="text-red-500 text-sm mt-1">{errors.totalMonths}</p>}
@@ -181,7 +181,7 @@ const CreateLoanModal = ({ onClose, onSuccess }) => {
                 name="startDate"
                 value={formData.startDate}
                 onChange={handleChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
               />
               {errors.startDate && <p className="text-red-500 text-sm mt-1">{errors.startDate}</p>}
             </div>
@@ -192,7 +192,7 @@ const CreateLoanModal = ({ onClose, onSuccess }) => {
                 name="maturityDate"
                 value={formData.maturityDate}
                 onChange={handleChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
           </div>
@@ -238,7 +238,7 @@ const CreateLoanModal = ({ onClose, onSuccess }) => {
             <button
               type="submit"
               disabled={loading || preview.length === 0}
-              className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:opacity-50"
+              className="px-4 py-2 bg-primary text-surface rounded-md hover:bg-primary/80 disabled:opacity-50"
             >
               {loading ? 'Creando...' : 'Crear Préstamo'}
             </button>
